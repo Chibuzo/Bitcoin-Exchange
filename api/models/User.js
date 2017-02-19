@@ -8,7 +8,31 @@
 module.exports = {
 
   attributes: {
+    fullname: {
+      type: 'string'
+    },
 
+    email: {
+      type: 'string',
+      email: 'true',
+      unique: 'true'
+    },
+
+    password: {
+      type: 'string'
+    },
+
+    deleted: {
+      type: 'boolean'
+    },
+
+    admin: {
+      type: 'boolean'
+    },
+
+    banned: {
+      type: 'boolean'
+    }
   }
 };
 

@@ -24,11 +24,12 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" src="/images/profile_small.jpg" />
+                            <i class="fa fa-user fa-3x" style="margin-left: 13px; color: #ccc"></i>
+                            <img alt="image" class="img-circle hidden" src="/images/profile_small.jpg" />
                              </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">David Williams</strong>
-                             </span> <span class="text-muted text-xs block">Art Director </span> </a>
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{ me.fname }}</strong>
+                             </span> <span class="text-muted text-xs block"></span> </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs hidden">
                             <li><a href="profile">Profile</a></li>
                             <li><a href="contacts">Contacts</a></li>
@@ -42,36 +43,36 @@
                     </div>
                 </li>
                 <li>
-                    <a href="index.html" class="page-link"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboards</span></a>
+                    <a href="index.html" class="page-link"><i class="fa fa-dashboard fa-lg fa-fw"></i> <span class="nav-label">Dashboards</span></a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-money"></i> <span class="nav-label">Accounts</span></a>
+                    <a href="#"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-bitcoin"></i> <span class="nav-label">Trade Bitcoin</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-bitcoin fa-lg fa-fw"></i> <span class="nav-label">Trade Bitcoin</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
-                        <li><a href="trade-bitcon/send" class="page-link">Send Bitcoin</a></li>
-                        <li><a href="trade-bitcoin/receive" class="page-link">Receive Bitcoin</a></li>
-                        <li><a href="trade-bitcon/buy" class="page-link">Buy Bitcoin</a></li>
-                        <li><a href="trade-bitcoin/sell" class="page-link">Sell Bitcoin</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Bitcoin Wallet</span></a>
-                    <ul class="nav nav-second-level collapse hidden">
-                        <li><a href="product/products" class="page-link">Products</a></li>
-                        <li><a href="product/create-products" class="page-link">Create Product</a></li>
+                        <li><a href="#wallet/send" class="page-link">Send</a></li>
+                        <li><a href="#wallet/receive" class="page-link">Receive</a></li>
+                        <li><a href="#wallet/buy" class="page-link">Buy</a></li>
                     </ul>
                 </li>
                 <li class="">
-                    <a href="user/profile"><i class="fa fa-list"></i> <span class="nav-label">Transactions</span></a>
+                    <a href="#wallet/transactions"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span></a>
+                </li>
+                <li class="">
+                    <a href="#"><i class="fa fa-group fa-lg fa-fw"></i> <span class="nav-label">Beneficiaries</span></a>
+                </li>
+                <li class="">
+                    <a href="#"><i class="fa fa-gift fa-lg fa-fw"></i> <span class="nav-label">Promotions</span></a>
+                </li>
+                <li class="">
+                    <a href="#"><i class="fa fa-exchange fa-lg fa-fw"></i> <span class="nav-label">Exchange</span></a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-wrench"></i> <span class="nav-label">Settings</span></a>
-                    <ul class="nav nav-second-level collapse hidden">
-                        <li><a href="setting/general" class="page-link">General Settings</a></li>
-                        <li><a href="staff/staffs" class="page-link">Manage Staffs</a></li>
-                    </ul>
+                    <a href="#"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
+                </li>
+                <li class="">
+                    <a href="/user/signout"><i class="fa fa-sign-out fa-lg fa-fw"></i> <span class="nav-label">Sign Out</span></a>
                 </li>
             </ul>
 
@@ -186,7 +187,7 @@
 
 
                     <li>
-                        <a href="login.html">
+                        <a href="/user/signout">
                             <i class="fa fa-sign-out"></i> Log out
                         </a>
                     </li>
@@ -196,15 +197,15 @@
         </div>
 
         <div id="content">
-
+          {% block body %} {% endblock %}
         </div>
 
         <div class="footer">
             <div class="pull-right">
-                10GB of <strong>250GB</strong> Free.
+                Haha!
             </div>
             <div>
-                <strong>Copyright</strong> MicroCredit System &copy;
+                <strong>Copyright</strong> CPBits &copy;
             </div>
         </div>
 

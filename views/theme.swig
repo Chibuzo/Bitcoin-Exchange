@@ -14,6 +14,17 @@
 
     <link href="/styles/animate.css" rel="stylesheet">
     <link href="/styles/style.css" rel="stylesheet">
+    
+    <style>
+      .auth-panel {
+        border: #ccc solid thin;
+        margin: auto;
+        width: 400px;
+        padding: 20px 20px 50px 20px;
+        margin-top: 80px;
+        border-radius: 3px;
+      }
+    </style>
 </head>
 <body id="page-top" class="landing-page">
 <div class="navbar-wrapper">
@@ -32,48 +43,26 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li><a class="page-scroll" href="#">BTC/NGN 499.694</a></li>
                         <li><a class="page-scroll" href="#">Help</a></li>
-                        <li><a class="page-scroll" href="#">Sign In</a></li>
-                        <li><a class="page-scroll" href="#">Sign Up</a></li>
+                        <li><a class="page-scroll" href="/user/signin">Sign In</a></li>
+                        <li><a class="page-scroll" href="/user/signup">Sign Up</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 </div>
 
-<div>
+<div style="clear: both">
 {% block body %}{% endblock %}
 
 </div>
 
 <section id="contact" class="gray-section contact">
     <div class="container">
-        <div class="row m-b-lg">
-            <div class="col-lg-12 text-center">
-                <div class="navy-line"></div>
-                <h1>Contact Us</h1>
-                <p>Feel free to contact us any time for assistance.</p>
-            </div>
-        </div>
-        <div class="row m-b-lg">
-            <div class="col-lg-3 col-lg-offset-3">
-                <address>
-                    <strong><span class="navy">Company name, Inc.</span></strong><br/>
-                    Moloye Street<br/>
-                    Sabo yaba, Lagos State<br/>
-                    <i class="fa fa-phone"></i> (+234) 8033 3333 333
-                </address>
-            </div>
-            <div class="col-lg-4">
-                <p class="text-color">
-                    Something might just need to be here, that I don't know now.
-                </p>
-            </div>
-        </div>
         <div class="row">
             <div class="col-lg-12 text-center">
-                <a href="mailto:test@email.com" class="btn btn-primary">Send us mail</a>
+              <br><br><br>
                 <p class="m-t-sm">
-                    Or follow us on social platform
+                    Follow us on social platform
                 </p>
                 <ul class="list-inline social-icon">
                     <li><a href="#"><i class="fa fa-twitter"></i></a>
@@ -159,6 +148,7 @@
     // Activate WOW.js plugin for animation on scrol
     new WOW().init();
 
+    {% block script %} {% endblock %}
 </script>
 
 </body>
