@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="col-md-6 text-center  wow zoomIn">
-            <img src="/images/bitcoin-3.jpg" alt="bitcoins" class="img-responsive">
+            <img src="/images/bitcoin-3.jpg" alt="bitcoins" class="img-responsive" style="margin: auto">
         </div>
         <div class="col-md-3 text-center wow fadeInRight">
             <div>

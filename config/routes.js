@@ -36,6 +36,12 @@ module.exports.routes = {
   
   'GET /user/signout': 'UserController.signout',
   
-  'GET /user/dashboard': 'UserController.dashboard'
+  'GET /user/dashboard': 'UserController.dashboard',
+
+  'GET /wallet/create': 'BitcoinWalletController.createWallet',
+
+  'GET /trade/': {
+      view: 'trade/market'
+  }
 
 };

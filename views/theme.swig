@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>CPBit - {{ title }}</title>
+    <title>Afiaego - {{ title }}</title>
 
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href="/styles/font-awesome.min.css" rel="stylesheet">
@@ -37,12 +37,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.html">CPBit</a>
+                    <a class="navbar-brand" href="/">AfiaEgo</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li><a class="page-scroll" href="#">BTC/NGN 499.694</a></li>
-                        <li><a class="page-scroll" href="#">Help</a></li>
+                        <li><a class="page-scroll" href="/trade/">Market</a></li>
                         <li><a class="page-scroll" href="/user/signin">Sign In</a></li>
                         <li><a class="page-scroll" href="/user/signup">Sign Up</a></li>
                     </ul>
@@ -76,7 +76,7 @@
         </div>
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
-                <p><strong>&copy; 2015 Company Name</strong>
+                <p><strong>&copy; 2015 Afiaego</strong>
             </div>
         </div>
     </div>
