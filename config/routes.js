@@ -1,47 +1,51 @@
-/**
- * Route Mappings
- * (sails.config.routes)
- *
- * Your routes map URLs to views and controllers.
- *
- * For more information on configuring custom routes, check out:
- * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
- */
-
 module.exports.routes = {
 
-  '/': {
-    view: 'homepage'
-  },
+    '/': {
+        view: 'homepage'
+    },
 
-  /***************************************************************************
-  *                                                                          *
-  * Custom routes here...                                                    *
-  *                                                                          *
-  * If a request to a URL doesn't match any of the custom routes above, it   *
-  * is matched against Sails route blueprints. See `config/blueprints.js`    *
-  * for configuration options and examples.                                  *
-  *                                                                          *
-  ***************************************************************************/
+    'GET /user/signin': {
+        view: 'user/signin'
+    },
 
-  'GET /user/signin': {
-    view: 'user/signin'
-  },
-  
-  'GET /user/signup': {
-      view: 'user/signup'
-  },
-  
-  'PUT /user/signin': 'UserController.signin',
-  
-  'GET /user/signout': 'UserController.signout',
-  
-  'GET /user/dashboard': 'UserController.dashboard',
+    'GET /user/signup': {
+        view: 'user/signup'
+    },
 
-  'GET /wallet/create': 'BitcoinWalletController.createWallet',
+    'PUT /user/signin': 'UserController.signin',
 
-  'GET /trade/': {
-      view: 'trade/market'
-  }
+    'GET /user/signout': 'UserController.signout',
+
+    'GET /user/dashboard': 'UserController.dashboard',
+
+    'GET /user/setting': 'UserController.settings',
+
+    'GET /admin/dashboard': 'AdminController.dashboard',
+
+    'GET /admin/users': 'AdminController.getUsers',
+
+    'GET /admin/settings': 'AdminController.settings',
+
+    'POST /admin/add-account': 'AdminController.addBankAccount',
+
+    'GET /trade/': {
+        view: 'trade/market'
+    },
+
+    'GET /accounts/': 'AccountController.getAccounts',
+
+    'GET /beneficiary/': 'BeneficiaryController.getBeneficiaries',
+
+    'POST /beneficiary/add': 'BeneficiaryController.addBeneficiary',
+
+    'POST /account/fundNairaAccount': 'NairaTransactionController.fundNairaAccount',
+
+    'GET /account/transactions': 'AccountController.getTransactions',
+
+    'GET /wallet/new-address': 'BitcoinWalletController.createNewAddress',
+
+    'POST /wallet/send': 'BitcoinTransactionController.sendBTC',
+
+    'GET /transaction/btc': 'BitcoinTransactionController.getTransactions',
 
 };

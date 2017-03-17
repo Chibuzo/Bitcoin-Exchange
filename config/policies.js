@@ -21,9 +21,21 @@ module.exports.policies = {
   },
 
   UserController: {
-      signup: ['isLoggedOut'],
-      signin: ['isLoggedOut']
-  }
+      /*signup: ['isLoggedOut'],
+      signin: ['isLoggedOut']*/
+  },
+
+  AccountController: {
+      '*': 'isLoggedIn'
+  },
+
+  BeneficiaryController: {
+      '*': 'isLoggedIn'
+  },
+
+  AdminController: {
+      '*': 'isAdmin'
+  },
 
   /***************************************************************************
   *                                                                          *

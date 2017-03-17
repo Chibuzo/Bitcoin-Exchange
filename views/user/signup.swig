@@ -19,6 +19,7 @@
                     <label for="password">PASSWORD</label>
                     <input type="password" name="password" id="password" class="form-control input-lg" required />
                 </div>
+
                 <div class="form-group">
                     <label for="verify_password">VERIFY PASSWORD</label>
                     <input type="password" name="verify_password" id="verify_password" class="form-control input-lg" required />

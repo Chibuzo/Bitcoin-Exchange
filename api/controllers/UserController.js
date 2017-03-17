@@ -6,6 +6,8 @@
  */
 var Emailaddresses = require('machinepack-emailaddresses');
 var Passwords = require('machinepack-passwords');
+var wallet = require('blockchain.info/MyWallet');
+//const formatCurrency = require('format-currency');
 
 module.exports = {  
     signup: function(req, res) {
@@ -34,39 +36,47 @@ module.exports = {
                     error: function(err) {
                         return res.serverError(err);
                     },        
-                    success: function(result) {
+                    success: function(encryptedPassword) {
                         // collect ALL signup data
                         var data = {
                             fullname: req.param('fullname'),
                             email: req.param('email'),
-                            password: result
+                            password: encryptedPassword,
+                            level: 0
                         };
                         
-                        User.create(data).exec(function(err) {
-                          if (err) {
-                              if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
-                                  return res.json(200, { status: '02', msg: 'Email address is already taken, please try another one.' });
-                              }
-                              return res.json(501, { status: '00', msg: err }); // couldn't be completed
-                          }
-                          return res.json(200, { status: '01' });
+                        User.create(data).exec(function(err, newUser) {
+                            if (err) {
+                                if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
+                                    return res.json(200, { status: '02', msg: 'Email address is already taken, please try another one.' });
+                                }
+                                return res.json(501, { status: '00', msg: err }); // couldn't be completed
+                            }
+                            // create bitcoin wallet
+                            Blockchain.createWallet(req.param('email'), encryptedPassword, newUser.id);
+
+                            return res.json(200, { status: '01' });
                         });
                     }
                 });
             }
         });
     },
+
+    activateAccount: function(req, res) {
+
+    },
     
     signin: function(req, res) {
         User.findOne({
           email: req.param('email')
-        }).exec(function foundUser(err, createdUser) {
+        }).exec(function(err, foundUser) {
             if (err) return res.json(200, { status: 'Err', msg: err });
-            if (!createdUser) return res.json(200, { status: 'Err', msg : 'User not found' });
+            if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
       
             Passwords.checkPassword({
                 passwordAttempt: req.param('password'),
-                encryptedPassword: createdUser.password
+                encryptedPassword: foundUser.password
             }).exec({
                 error: function (err) {
                   return res.json(200, { status: 'Err', msg: err });
@@ -75,15 +85,26 @@ module.exports = {
                   return res.json(200, { status: 'Err', msg : 'User not found' });
                 },
                 success: function () {
-                    if (createdUser.deleted) {
+                    if (foundUser.deleted) {
                         return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://cpbit.com/restore to restore your account.'" });
                     }
             
-                    if (createdUser.banned) {
+                    if (foundUser.banned) {
                         return res.json(200, { status: 'Err', msg: "'Your account has been banned, most likely for violation of the Terms of Service. Please contact us.'"});
                     }
-                    req.session.userId = createdUser.id;
-                    return res.json(200, { status: 'Ok' });
+
+                    // fetch account balances
+                    Blockchain.getBalance(foundUser.guid, foundUser.password).then(function(btc_balance) {
+                        req.session.coinBalance = btc_balance.balance / 100000000;     // converting Satoshi to BTC
+                        req.session.save();
+                    }).catch(function(err) {
+                        console.log(err);
+                    });
+                    req.session.userId = foundUser.id;
+                    req.session.fname = foundUser.fullname;
+                    req.session.admin = foundUser.admin;
+                    var user_type = foundUser.admin ? 'admin' : 'user';
+                    return res.json(200, { status: 'Ok', user_type: user_type });
                 }
             });
         });
@@ -98,12 +119,13 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
-            
+
             return res.view('user/dashboard', {
                 me: {
                     id: user.id,
                     fname: user.fullname,
-                    email: user.email
+                    email: user.email,
+                    btc_balance: req.session.coinBalance
                 }
             });
         });
@@ -122,5 +144,9 @@ module.exports = {
             return res.redirect('/');
         });
     },
+
+    settings: function(req, res) {
+
+    }
 };
 

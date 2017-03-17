@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Afiaego | {{ title }}</title>
+    <title>Bitcoin Platform</title>
 
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href="/styles/font-awesome.min.css" rel="stylesheet">
@@ -49,8 +49,8 @@
                             <img alt="image" class="img-circle hidden" src="/images/profile_small.jpg" />
                              </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{ req.session.fname }}</strong>
-                             </span></a>
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Administrator</strong>
+                             </span> <span class="text-muted text-xs block"></span> </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs hidden">
                             <li><a href="profile">Profile</a></li>
                             <li><a href="contacts">Contacts</a></li>
@@ -64,12 +64,12 @@
                     </div>
                 </li>
                 <li>
-                    <a href="/user/dashboard" class="page-link"><i class="fa fa-home fa-lg fa-fw"></i> <span class="nav-label">Home</span></a>
+                    <a href="/admin/dashboard" class="page-link"><i class="fa fa-dashboard fa-lg fa-fw"></i> <span class="nav-label">Dashboards</span></a>
                 </li>
                 <li>
                     <a href="/accounts/"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
                 </li>
-                <li class="hidden">
+                <li>
                     <a href="#"><i class="fa fa-bitcoin fa-lg fa-fw"></i> <span class="nav-label">Trade Bitcoin</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li><a href="#wallet/send" class="page-link">Send</a></li>
@@ -78,11 +78,7 @@
                     </ul>
                 </li>
                 <li class="">
-                    <a href="/account/tran"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                        <li><a href="/account/transactions">Naira Tranasactions</a></li>
-                        <li><a href="/transaction/btc">BTC Transactions</a></li>
-                    </ul>
+                    <a href="#wallet/transactions"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span></a>
                 </li>
                 <li class="">
                     <a href="/beneficiary/"><i class="fa fa-group fa-lg fa-fw"></i> <span class="nav-label">Beneficiaries</span></a>
@@ -91,10 +87,10 @@
                     <a href="#"><i class="fa fa-gift fa-lg fa-fw"></i> <span class="nav-label">Promotions</span></a>
                 </li>
                 <li class="">
-                    <a href="/trade/"><i class="fa fa-exchange fa-lg fa-fw"></i> <span class="nav-label">Exchange</span></a>
+                    <a href="/admin/users"><i class="fa fa-users fa-lg fa-fw"></i> <span class="nav-label">Users</span></a>
                 </li>
                 <li>
-                    <a href="/user/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
+                    <a href="/admin/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
                 </li>
                 <li class="">
                     <a href="/user/signout"><i class="fa fa-sign-out fa-lg fa-fw"></i> <span class="nav-label">Sign Out</span></a>
@@ -252,19 +248,8 @@
 $(document).ready(function() {
     // load page using ajax
 
-
     {% block script %} {% endblock %}
 });
-
-function generateUniqueRef(num) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-
-    for (var i = 0; i < num; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
 </script>
 </body>
 

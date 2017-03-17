@@ -32,7 +32,11 @@
 
 		$.post('/user/signin', $(this).serialize(), function(d) {
 			if (d.status.trim() == 'Ok') {
-				location.replace('/user/dashboard');
+				if (d.user_type == 'user') {
+					location.replace('/user/dashboard');
+				} else if (d.user_type == 'admin') {
+					location.replace('/admin/dashboard');
+				}
 			} else {
 				$(".alert-danger").html("<strong>Error:</strong> " + d.msg).removeClass('hidden');
 			}

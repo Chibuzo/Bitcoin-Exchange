@@ -7,32 +7,58 @@
 
 module.exports = {
 
-  attributes: {
-    fullname: {
-      type: 'string'
-    },
+    attributes: {
+        fullname: {
+            type: 'string'
+        },
 
-    email: {
-      type: 'string',
-      email: 'true',
-      unique: 'true'
-    },
+        email: {
+            type: 'string',
+            email: 'true',
+            unique: 'true'
+        },
 
-    password: {
-      type: 'string'
-    },
+        guid: {
+            type: 'string',
+            unique: 'true'
+        },
 
-    deleted: {
-      type: 'boolean'
-    },
+        password: {
+            type: 'string'
+        },
 
-    admin: {
-      type: 'boolean'
-    },
+        deleted: {
+            type: 'boolean'
+        },
 
-    banned: {
-      type: 'boolean'
+        admin: {
+            type: 'boolean'
+        },
+
+        level: {
+            type: 'integer'
+        },
+
+        // add reference to beneficiaries
+        beneficiaries: {
+            collection: 'beneficiary',
+            via: 'user_id'
+        },
+
+        // add reference to transactions
+        transactions: {
+            collection: 'nairatransaction',
+            via: 'user_id'
+        },
+
+        bitcointransactions: {
+            collection: 'bitcointransaction',
+            via: 'sender'
+        },
+
+        banned: {
+            type: 'boolean'
+        }
     }
-  }
 };
 
