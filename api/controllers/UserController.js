@@ -15,7 +15,7 @@ module.exports = {
             return res.badRequest('An email address is required!');
         }
     
-        if (_.isUndefined(req.param('password')) && req.param('password').length < 6) {
+        if (_.isUndefined(req.param('password')) || req.param('password').length < 6) {
             return res.badRequest('A password is required, and must be aleast 6 characters');
         }
         
@@ -93,9 +93,17 @@ module.exports = {
                         return res.json(200, { status: 'Err', msg: "'Your account has been banned, most likely for violation of the Terms of Service. Please contact us.'"});
                     }
 
-                    // fetch account balances
-                    Blockchain.getBalance(foundUser.guid, foundUser.password).then(function(btc_balance) {
-                        req.session.coinBalance = btc_balance.balance / 100000000;     // converting Satoshi to BTC
+                    // fetch Naira account balance
+                    NairaAccount.getBalance(foundUser.id).then(function(balance) {
+                        // fetch BTC account balances
+                        Blockchain.getBalance(foundUser.guid, foundUser.password).then(function(btc_balance) {
+                            req.session.coinBalance = btc_balance.balance / 100000000;     // converting Satoshi to BTC
+                            req.session.save();
+                        }).catch(function(err) {
+                            console.log(err);
+                        });
+                        req.session.naira_balance = balance.total;
+                        req.session.naira_available = balance.available;
                         req.session.save();
                     }).catch(function(err) {
                         console.log(err);

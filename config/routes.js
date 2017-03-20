@@ -28,6 +28,10 @@ module.exports.routes = {
 
     'POST /admin/add-account': 'AdminController.addBankAccount',
 
+    'GET /admin/naira-transactions': 'AdminController.getNairaTransactions',
+
+    'GET /admin/btc-transactions': 'AdminController.getBTCTransactions',
+
     'GET /trade/': {
         view: 'trade/market'
     },
@@ -47,5 +51,10 @@ module.exports.routes = {
     'POST /wallet/send': 'BitcoinTransactionController.sendBTC',
 
     'GET /transaction/btc': 'BitcoinTransactionController.getTransactions',
+
+    // Trading routes begins here
+    'POST /offer/sell': 'OfferController.offer',
+
+    'POST /order/buy': 'OrderController.placeOrder'
 
 };

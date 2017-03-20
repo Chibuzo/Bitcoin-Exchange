@@ -78,7 +78,7 @@
                     </ul>
                 </li>
                 <li class="">
-                    <a href="/account/tran"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li><a href="/account/transactions">Naira Tranasactions</a></li>
                         <li><a href="/transaction/btc">BTC Transactions</a></li>
@@ -87,14 +87,14 @@
                 <li class="">
                     <a href="/beneficiary/"><i class="fa fa-group fa-lg fa-fw"></i> <span class="nav-label">Beneficiaries</span></a>
                 </li>
-                <li class="">
+                <li class="hidden">
                     <a href="#"><i class="fa fa-gift fa-lg fa-fw"></i> <span class="nav-label">Promotions</span></a>
                 </li>
                 <li class="">
                     <a href="/trade/"><i class="fa fa-exchange fa-lg fa-fw"></i> <span class="nav-label">Exchange</span></a>
                 </li>
                 <li>
-                    <a href="/user/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
+                    <a href="#/user/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
                 </li>
                 <li class="">
                     <a href="/user/signout"><i class="fa fa-sign-out fa-lg fa-fw"></i> <span class="nav-label">Sign Out</span></a>

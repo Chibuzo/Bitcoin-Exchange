@@ -66,8 +66,8 @@
                 <li>
                     <a href="/admin/dashboard" class="page-link"><i class="fa fa-dashboard fa-lg fa-fw"></i> <span class="nav-label">Dashboards</span></a>
                 </li>
-                <li>
-                    <a href="/accounts/"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
+                <li class="">
+                    <a href="/admin/accounts"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-bitcoin fa-lg fa-fw"></i> <span class="nav-label">Trade Bitcoin</span><span class="fa arrow"></span></a>
@@ -78,14 +78,13 @@
                     </ul>
                 </li>
                 <li class="">
-                    <a href="#wallet/transactions"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span></a>
+                    <a href="#"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li><a href="/admin/naira-transactions">Naira Tranasactions</a></li>
+                        <li><a href="/admin/btc-transaction">BTC Transactions</a></li>
+                    </ul>
                 </li>
-                <li class="">
-                    <a href="/beneficiary/"><i class="fa fa-group fa-lg fa-fw"></i> <span class="nav-label">Beneficiaries</span></a>
-                </li>
-                <li class="">
-                    <a href="#"><i class="fa fa-gift fa-lg fa-fw"></i> <span class="nav-label">Promotions</span></a>
-                </li>
+
                 <li class="">
                     <a href="/admin/users"><i class="fa fa-users fa-lg fa-fw"></i> <span class="nav-label">Users</span></a>
                 </li>

@@ -23,6 +23,7 @@
         padding: 20px 20px 50px 20px;
         margin-top: 80px;
         border-radius: 3px;
+        background-color: #fff;
       }
     </style>
 </head>
@@ -37,7 +38,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">AfiaEgo</a>
+                    <a class="logo" href="/"><img src="../images/logo.png" /></a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">

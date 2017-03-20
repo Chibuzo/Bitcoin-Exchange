@@ -56,6 +56,16 @@ module.exports = {
             via: 'sender'
         },
 
+        orders: {
+            collection: 'order',
+            via: 'owner'
+        },
+
+        offers: {
+            collection: 'offer',
+            via: 'owner'
+        },
+
         banned: {
             type: 'boolean'
         }

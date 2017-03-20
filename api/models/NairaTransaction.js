@@ -54,6 +54,10 @@ module.exports = {
 
         status: {
             type: 'string'  // pending/ confirmed
+        },
+
+        deleted: {
+            type: 'boolean'
         }
     }
 };

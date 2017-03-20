@@ -1,5 +1,8 @@
 {% extends '../theme.swig' %}
 {% set title = 'New User Sign up' %}
+<style>
+body.landing-page { background-color: #2f4050 !important; }
+</style>
 {% block body %}
 <section class="container" style="margin-top: 60px">
     <div class="row">
@@ -34,6 +37,7 @@
 
 {% block script %}
 {#<script>#}
+$('body').css('background-color', '#2f4050');
 $("#signup").submit(function(e) {
 	e.preventDefault();
 	var $this = $(this);

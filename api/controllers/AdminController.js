@@ -22,6 +22,24 @@ module.exports = {
         });
     },
 
+    getNairaTransactions: function(req, res) {
+        NairaTransaction.find().populate('user_id').exec(function(err, tnx) {
+            if (err) {
+                return res.negotiate(err);
+            }
+            return res.view('admin/naira-transactions', { trnx: tnx });
+        });
+    },
+
+    getBTCTransactions: function(req, res) {
+        BitcoinTransaction.find().exec(function(err, tnx) {
+            if (err) {
+                res.negotiate(err);
+            }
+            return res.view('admin/btc-transactions', { trnx: tnx })
+        });
+    },
+
     getUsers: function(req, res) {
         User.find().exec(function(err, users) {
             return res.view('admin/users', {'users': users});

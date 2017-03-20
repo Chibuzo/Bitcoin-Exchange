@@ -35,7 +35,7 @@ module.exports = {
             .catch(function(err) {
                 return reject(err);
             });
-        })
+        });
     },
 
     createAddress: function(guid, password) {

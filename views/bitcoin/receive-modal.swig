@@ -15,7 +15,7 @@
 							<div class="form-group">
 								<label for="bank">Receive to</label>
 								<select class="form-control">
-									<option value="1">My Wallet ({{ btc_balance }})</option>
+									<option value="1">My Wallet ({{ req.session.coinBalance }})</option>
 								</select>
 							</div>
 						</div>
