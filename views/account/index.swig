@@ -33,12 +33,12 @@
 								<h3>BTC Account</h3><br>
 								<div>
 									Balance<br>
-									BTC {{ req.session.coinBalance }}
+									BTC {{ req.session.coinTotalAmount }}
 									<br><br>
 								</div>
 								<div>
 									Available<br>
-									BTC {{ req.session.coinBalance }}
+									BTC {{ req.session.coinAvailableBalance }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
 								<a href="/transaction/btc" class="btn btn-primary pull-right">View Account</a>

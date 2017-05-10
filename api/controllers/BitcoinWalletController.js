@@ -11,10 +11,11 @@ module.exports = {
             if (err) {
                 sendMail.sendErrMsg(err);
             }
-
-            Blockchain.createAddress(foundUser.guid, foundUser.password).then(function(new_address) {
-                AddressActions.saveNewAddress(new_address.address, req.session.userId);
-                res.json(200, { status: 'success', address: new_address.address });
+            Wallet.generateAddress(foundUser.mnemonic, foundUser.password).then(function(addr) {
+                AddressActions.saveNewAddress(addr, req.session.userId);
+                res.json(200, { status: 'success', address: addr });
+            }).catch(function(err) {
+                console.log(err);
             });
         });
     }

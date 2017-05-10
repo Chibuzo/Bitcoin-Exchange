@@ -2,9 +2,9 @@
  * Created by Uzo on 3/13/2017.
  */
 
-var Wallet = require('blockchain.info/MyWallet');
+//var Wallet = require('blockchain.info/MyWallet');
 
-var options = { apiCode: sails.config.api.key, apiHost: 'http://localhost:3000' };
+//var options = { apiCode: sails.config.api.key, apiHost: 'http://localhost:3000' };
 
 module.exports = {
     createWallet: function(email, password, user_id) {

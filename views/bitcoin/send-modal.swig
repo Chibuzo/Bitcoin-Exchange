@@ -15,7 +15,7 @@
 							<div class="form-group">
 								<label for="bank">From</label>
 								<select class="form-control">
-									<option value="1">My Wallet ({{ req.session.coinBalance }})</option>
+									<option value="1">My Wallet ({{ req.session.coinAvailableBalance }})</option>
 								</select>
 							</div>
 						</div>
@@ -41,8 +41,9 @@
 					<button type="button" class="btn btn-default close-modal" data-dismiss="modal">
 						Cancel
 					</button>
-					<button type="submit" class="btn btn-primary">
-						Send
+					<button type="submit" class="btn btn-primary" id="btc-send-btn">
+						<i class='fa fa-bitcoin'></i>&nbsp;
+						Send BTC
 					</button>
 				</div>
 			</form>

@@ -20,14 +20,15 @@ module.exports = {
                 var receiver = 0;
                 if (result) {
                     receiver = result.user_id;
-                }
-                    Blockchain.sendBitcoin(foundUser.guid, foundUser.password, req.param('btc_address'), req.param('btc_amount')).then(function(response) {
-                        AddressActions.saveBTCTransaction(req.param('btc_address'), req.param('btc_amount'), req.session.userId, receiver, response.fee, req.param('description'), response.txid, response.tx_hash, response.message, response.success);
-                        return res.json(200, { status: 'success' });
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
+                }                    
+				var q = req.param;	
+				Wallet.sendBTC(foundUser.mnemonic, foundUser.password, q('btc_address'), q('btc_amount'), q('description')).then(function(resp) {
+					AddressActions.saveBTCTransaction(q('btc_address'), q('btc_amount'), req.session.userId, receiver, resp.fee, q('description'), resp.txid, 'message', 'Done');
+					return res.json(200, { status: 'success' });
+				})
+				.catch(function(err) {
+					console.log(err);
+				});
                 /*} else {
 
                 }*/
@@ -37,7 +38,13 @@ module.exports = {
 
     getTransactions: function(req, res) {
         BitcoinTransaction.find({ sender: req.session.userId })
-            .populate('receiver').exec(function(err, tnx) {
+			.where({
+				or: [
+					{ sender: req.session.userId },
+					{ receiver: req.session.userId }
+				]
+			})
+            .sort('createdAt DESC').populate('receiver').exec(function(err, tnx) {
             if (err) console.log(err);
             res.view('bitcoin/transactions', { trnx: tnx });
         });

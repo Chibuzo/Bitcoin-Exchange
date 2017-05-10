@@ -26,6 +26,10 @@ module.exports = {
         password: {
             type: 'string'
         },
+        
+        mnemonic: {
+            type: 'string'
+        },
 
         deleted: {
             type: 'boolean'

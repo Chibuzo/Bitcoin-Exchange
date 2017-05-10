@@ -6,7 +6,6 @@
  */
 var Emailaddresses = require('machinepack-emailaddresses');
 var Passwords = require('machinepack-passwords');
-var wallet = require('blockchain.info/MyWallet');
 //const formatCurrency = require('format-currency');
 
 module.exports = {  
@@ -53,8 +52,13 @@ module.exports = {
                                 return res.json(501, { status: '00', msg: err }); // couldn't be completed
                             }
                             // create bitcoin wallet
-                            Blockchain.createWallet(req.param('email'), encryptedPassword, newUser.id);
-
+                            Wallet.createWallet(newUser.email, newUser.password).then(function(wallet) {
+                                User.update({ id: newUser.id }, { guid: wallet.wallet_id, mnemonic: wallet.mnemonic }).exec(function(err) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                });
+                            });
                             return res.json(200, { status: '01' });
                         });
                     }
@@ -86,7 +90,7 @@ module.exports = {
                 },
                 success: function () {
                     if (foundUser.deleted) {
-                        return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://cpbit.com/restore to restore your account.'" });
+                        return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://afiaego.com/restore to restore your account.'" });
                     }
             
                     if (foundUser.banned) {
@@ -96,10 +100,12 @@ module.exports = {
                     // fetch Naira account balance
                     NairaAccount.getBalance(foundUser.id).then(function(balance) {
                         // fetch BTC account balances
-                        Blockchain.getBalance(foundUser.guid, foundUser.password).then(function(btc_balance) {
-                            req.session.coinBalance = btc_balance.balance / 100000000;     // converting Satoshi to BTC
+                        Wallet.getBalance(foundUser.mnemonic, foundUser.password).then(function(btc_balance) {
+                            req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
+                            req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
                             req.session.save();
-                        }).catch(function(err) {
+                        })
+                        .catch(function(err) {
                             console.log(err);
                         });
                         req.session.naira_balance = balance.total;

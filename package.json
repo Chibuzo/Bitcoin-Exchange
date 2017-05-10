@@ -5,6 +5,9 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "bip39": "^2.3.0",
+    "bitcoinjs-lib": "^2.3.0",
+    "bitcore-wallet-client": "^5.1.2",
     "format-currency": "^1.0.0",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",

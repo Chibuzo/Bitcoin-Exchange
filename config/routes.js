@@ -55,6 +55,10 @@ module.exports.routes = {
     // Trading routes begins here
     'POST /offer/sell': 'OfferController.offer',
 
-    'POST /order/buy': 'OrderController.placeOrder'
+    //'POST /order/buy': 'OrderController.placeOrder',
+
+    'GET /client/test': 'ClientController.test',
+
+    'GET /wallet/create': 'ClientController.create',
 
 };

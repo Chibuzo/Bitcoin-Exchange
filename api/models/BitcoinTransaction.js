@@ -9,8 +9,7 @@ module.exports = {
 
     attributes: {
         address: {
-            type: 'string',
-            unique: 'true'
+            type: 'string'
         },
 
         sender: {

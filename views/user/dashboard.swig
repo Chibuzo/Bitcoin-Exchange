@@ -79,7 +79,7 @@ $("#getBTC-address").click(function(e) {
 // send bitcoin
 $("#form-send-coin").submit(function(e) {
 	e.preventDefault();
-
+	$("#btc-send-btn").html("<i class='fa fa-cog fa-spin'></i> &nbsp;Processing").prop("disabled", true);
 	$.post('/wallet/send', $(this).serialize(), function(d) {
 		if (d.status.trim() == 'success') {
 			location.replace('/transaction/btc');
@@ -89,8 +89,8 @@ $("#form-send-coin").submit(function(e) {
 
 
 var qrcode = new QRCode(document.getElementById("qrcode"), {
-	width : 150,
-	height : 150
+	width : 170,
+	height : 170
 });
 
 function makeCode () {

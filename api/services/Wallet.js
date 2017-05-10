@@ -5,57 +5,122 @@
 var Client = require('bitcore-wallet-client');
 
 var BWS_INSTANCE_URL = 'https://bws.bitpay.com/bws/api';
+var NETWORK = 'testnet';
+
+var client = new Client({
+    baseUrl: BWS_INSTANCE_URL,
+    verbose: false,
+});
 
 module.exports = {
-    createWallet: function (name) {
-        return new promise(function(resolve, reject) {
-            var client = new Client({
-                baseUrl: BWS_INSTANCE_URL,
-                verbose: false,
-            });
-
-            client.createWallet("Afiaego", "Chibuzo", 2, 2, {network: 'testnet'}, function(err, secret) {
+    createWallet: function (name, passphrase) {
+        return new Promise(function(resolve, reject) {
+            client.seedFromRandomWithMnemonic({ network: NETWORK, passphrase: passphrase });
+            client.createWallet("Afiaego", name, 1, 1, { network: NETWORK }, function(err, ret) {
                 if (err) {
-                    console.log('error: ',err);
-                    return
+                    console.log('error: ', err);
+                    return reject(err);
+                }
+                var wallet = {
+                    mnemonic: client.getMnemonic(),
+                    wallet_id: ret.walletId
                 };
-                // Handle err
-                console.log('Wallet Created. Share this secret with your copayers: ' + secret);
-                //fs.writeFileSync('irene.dat', client.export());
-
-                client.joinWallet(secret, "Okolo", {}, function(err, wallet) {
+                return resolve(wallet);
+            });
+        });
+    },
+    
+    getBalance: function(encrypted_code, passphrase) {
+        return new Promise(function(resolve, reject) {
+            client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
+            client.openWallet(function(err, ret) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                client.getBalance(function(err, balance) {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    var Balance = {
+                        available: balance.availableAmount,
+                        totalAmount: balance.totalAmount
+                    };
+                    return resolve(Balance);
+                });
+            });
+        });
+    },
+    
+    generateAddress: function(encrypted_code, passphrase) {
+        return new Promise(function(resolve, reject) {
+            //client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
+            client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err, cred) {
+                if (err) {
+                    return reject(err);
+                }
+                client.createAddress({}, function(err, addr) {
                     if (err) {
                         console.log('error: ', err);
-                        return
-                    };
-
-                    console.log('Joined ' + wallet.name + '!');
-                    //fs.writeFileSync('tomas.dat', client.export());
-
-                    client.openWallet(function(err, ret) {
+                        return reject(err);
+                    }
+                    return resolve(addr.address);
+                });
+            });
+        });
+    },
+    
+    sendBTC: function(encrypted_code, passphrase, send_addr, amount, msg) {
+        return new Promise(function(resolve, reject) {
+            client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
+            client.openWallet(function(err, ret) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                var outputs = [{
+                    toAddress: send_addr,
+                    amount: amount * 100000000
+                }];
+                var opts = {
+                    outputs: outputs,
+                    message: msg,
+                    feePerKb: 50000
+                };
+                client.createTxProposal( opts, function (err, txp) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    client.publishTxProposal({txp: txp}, function (err, txp) {
                         if (err) {
-                            console.log('error: ', err);
-                            return
-                        };
-                        console.log('\n\n** Wallet Info', ret); //TODO
-
-                        console.log('\n\nCreating first address:', ret); //TODO
-                        if (ret.wallet.status == 'complete') {
-                            client.createAddress({}, function(err,addr){
-                                if (err) {
-                                    console.log('error: ', err);
-                                    return;
-                                };
-
-                                console.log('\nReturn:', addr)
-                            });
+                            console.log(err);
+                            return;
                         }
+                        client.signTxProposal(txp, function (err, txp) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            client.broadcastTxProposal(txp, function (err, txp, memo) {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                if (memo) {
+                                    console.log(memo);
+                                }
+                                console.log("Transaction was successfully broadcasted!");
+                                var response = {
+                                    txid: txp.txid,
+                                    fee: txp.fee
+                                };
+                                return resolve(response);
+                            });
+                        });
                     });
                 });
-                return resolve(secret);
-            })
-            .catch(function(err) {
-
             });
         });
     }
