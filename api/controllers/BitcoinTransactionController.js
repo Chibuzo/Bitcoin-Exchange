@@ -37,7 +37,7 @@ module.exports = {
     },
 
     getTransactions: function(req, res) {
-        BitcoinTransaction.find({ sender: req.session.userId })
+        BitcoinTransaction.find()
 			.where({
 				or: [
 					{ sender: req.session.userId },

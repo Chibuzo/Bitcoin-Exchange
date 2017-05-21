@@ -17,6 +17,9 @@
 
 	.inner-div {
 		padding: 15px 8px;
+	}
+	
+	.buy tr td, .sell tr td {
 		color: #f0f0f0;
 	}
 
@@ -123,7 +126,11 @@
 								<td id="est-btc" class="text-right">0.00</td>
 							</tr>
 						</table>
-						<button type="button" class="btn btn-info btn-block btn-sm" style="margin-top: 7px">Sign in to trade</button>
+						{% if req.session.userId %}
+							<button type="button" class="btn btn-info btn-block btn-sm" style="margin-top: 7px" id="order-btn">Place Order</button>
+						{% else %}
+							<a href="/signin" class="btn btn-info btn-block btn-sm" style="margin-top: 7px">Sign in to trade</a>
+						{% endif %}	
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -186,12 +193,14 @@ $("#btc_qty, #prefered_amount").keyup(function() {
 		$(".buy").find("#est-btc").text(buying_fees);
 		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
 		$(".buy").find("#ng-balance").text(naira_balance);
+		$("#order-btn").text("Place Order");
 	} else if (trade_opt == 'Sell') {
 		selling_fees = (selling_fees * btc).toFixed(8);
 		$(".sell").find("#est-btc").text(selling_fees);
 		$(".sell").find("#btc-required").text(btc);
 		$(".sell").find("#btc-balance").text(btc_balance);
-		$(".sell").find("#sales-total").text(numeral(ngn * btc).format('0,0.00'))
+		$(".sell").find("#sales-total").text(numeral(ngn * btc).format('0,0.00'));
+		$("#order-btn").text("Post Offer");
 	}
 });
 
@@ -222,22 +231,22 @@ $("#form-trade").submit(function(e) {
 	e.preventDefault();
 
 	var opt = $("#trade-opt").val();
+	var path;
 	if (opt == 'Sell') {
-		$.post('/offer/sell', $(this).serialize(), function(d) {
-			if (d.status.trim() == 'success') {
-
-			} else {
-
-			}
-		}, 'JSON');
+		path = '/offer/sell'
 	} else if (opt == 'Buy') {
-		$.post('/order/buy', $(this).serialize(), function(d) {
-			if (d.status.trim() == 'success') {
-
-			} else {
-
-			}
-		}, 'JSON');
+		path = '/order/buy';
 	}
+	$.post(path, $(this).serialize(), function(d) {
+		if (d.status.trim() == 'success') {
+			location.reload(true);
+		} else {
+			alert("Error");
+		}
+	}, 'JSON');
+});
+
+$("#order-btn").click(function() {
+	$("#form-trade").submit();
 });
 {% endblock %}

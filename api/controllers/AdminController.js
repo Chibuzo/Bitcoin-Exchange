@@ -36,7 +36,7 @@ module.exports = {
             if (err) {
                 res.negotiate(err);
             }
-            return res.view('admin/btc-transactions', { trnx: tnx })
+            return res.view('admin/btc-transactions', { trnx: tnx });
         });
     },
 

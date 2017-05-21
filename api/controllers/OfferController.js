@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	offer: function(req, res) {
+	makeOffer: function(req, res) {
         var param = req.param;
         if (_.isUndefined(param('btc_qty')) || !_.isNumber(param('btc_qty'))) {
             return res.json(200, { status: 'error', msg: 'Bitcoin quantity must be in numbers' });

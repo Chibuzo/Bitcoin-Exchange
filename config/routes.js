@@ -32,10 +32,6 @@ module.exports.routes = {
 
     'GET /admin/btc-transactions': 'AdminController.getBTCTransactions',
 
-    'GET /trade/': {
-        view: 'trade/market'
-    },
-
     'GET /accounts/': 'AccountController.getAccounts',
 
     'GET /beneficiary/': 'BeneficiaryController.getBeneficiaries',
@@ -53,11 +49,11 @@ module.exports.routes = {
     'GET /transaction/btc': 'BitcoinTransactionController.getTransactions',
 
     // Trading routes begins here
-    'POST /offer/sell': 'OfferController.offer',
+    'GET /trade/': 'TradeController.index',
+    
+    'POST /offer/sell': 'OfferController.makeOffer',
 
-    //'POST /order/buy': 'OrderController.placeOrder',
-
-    'GET /client/test': 'ClientController.test',
+    'POST /order/buy': 'OrderController.placeOrder',
 
     'GET /wallet/create': 'ClientController.create',
 
