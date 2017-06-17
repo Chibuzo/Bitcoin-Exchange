@@ -33,7 +33,7 @@ module.exports = {
     getBalance: function(encrypted_code, passphrase) {
         return new Promise(function(resolve, reject) {
             client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
-            client.openWallet(function(err, ret) {
+            client.openWallet(function(err) {
                 if (err) {
                     console.log(err);
                     return reject(err);
@@ -56,8 +56,9 @@ module.exports = {
     generateAddress: function(encrypted_code, passphrase) {
         return new Promise(function(resolve, reject) {
             //client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
-            client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err, cred) {
+            client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err) {
                 if (err) {
+                    console.log(err);
                     return reject(err);
                 }
                 client.createAddress({}, function(err, addr) {
@@ -72,13 +73,18 @@ module.exports = {
     },
     
     sendBTC: function(encrypted_code, passphrase, send_addr, amount, msg) {
+        var _client = new Client({
+            baseUrl: BWS_INSTANCE_URL,
+            verbose: false,
+        });
         return new Promise(function(resolve, reject) {
-            client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
-            client.openWallet(function(err, ret) {
+            _client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err) {
+            //client.openWallet(function(err) {
                 if (err) {
                     console.log(err);
                     return reject(err);
                 }
+
                 var outputs = [{
                     toAddress: send_addr,
                     amount: amount * 100000000
@@ -88,22 +94,23 @@ module.exports = {
                     message: msg,
                     feePerKb: 50000
                 };
-                client.createTxProposal( opts, function (err, txp) {
+                //console.log(outputs);
+                _client.createTxProposal( opts, function (err, txp) {
                     if (err) {
-                        console.log(err);
+                        console.log(err + " - this");
                         return;
                     }
-                    client.publishTxProposal({txp: txp}, function (err, txp) {
+                    _client.publishTxProposal({txp: txp}, function (err, txp) {
                         if (err) {
                             console.log(err);
                             return;
                         }
-                        client.signTxProposal(txp, function (err, txp) {
+                        _client.signTxProposal(txp, function (err, txp) {
                             if (err) {
                                 console.log(err);
                                 return;
                             }
-                            client.broadcastTxProposal(txp, function (err, txp, memo) {
+                            _client.broadcastTxProposal(txp, function (err, txp, memo) {
                                 if (err) {
                                     console.log(err);
                                     return;
@@ -114,7 +121,8 @@ module.exports = {
                                 console.log("Transaction was successfully broadcasted!");
                                 var response = {
                                     txid: txp.txid,
-                                    fee: txp.fee
+                                    fee: txp.fee,
+                                    status: 'success'
                                 };
                                 return resolve(response);
                             });

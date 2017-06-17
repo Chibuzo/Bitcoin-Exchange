@@ -13,24 +13,19 @@ module.exports = {
         },
 
         btc_qty: {
-            type: 'string'
+            type: 'float'
         },
 
         amount_per_btc: {   // in naira
-            type: 'string'
-        },
-
-        btc_per_naira: {
-            type: 'sting'
+            type: 'float'
         },
 
         fees: {
-            type: 'string'
+            type: 'float'
         },
 
         status: {
             type: 'string',
-            default: 'Pending'  // Pending, Completed or Cancelled
         }
     }
 };

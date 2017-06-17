@@ -13,24 +13,31 @@ module.exports = {
         },
 
         btc_amount: {
-            type: 'string'
+            type: 'float'
         },
 
-        cost_per_coin: {    // in naira
-            type: 'string'
-        },
-
-        btc_per_naira: {
-            type: 'sting'
+        //cost_per_coin: {    // in naira
+        //    type: 'float'
+        //},
+        amount_per_btc: {
+            type: 'float'
         },
 
         fees: {
-            type: 'string'
+            type: 'float'
+        },
+        
+        // must be removed!
+        payment: {
+            model: 'payment'
+        },
+        
+        transaction: {
+            model: 'nairatransaction'
         },
 
         status: {
             type: 'string',
-            default: 'Open' // Open, Completed or Cancelled
         }
     }
 };

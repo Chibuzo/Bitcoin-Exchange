@@ -7,7 +7,7 @@
 
 module.exports = {
     getTransactions: function(req, res) {
-        NairaTransaction.find({ user_id: req.session.userId}).exec(function(err, tnx) {
+        NairaTransaction.find({ user_id: req.session.userId}).sort({ createdAt: 'desc' }).exec(function(err, tnx) {
             return res.view('account/transactions', { tranx: tnx });
         });
     },

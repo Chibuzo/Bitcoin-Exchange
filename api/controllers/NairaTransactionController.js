@@ -19,11 +19,20 @@ module.exports = {
             'status': 'Pending'
         };
 
-        NairaTransaction.create(data).exec(function(err, tnx) {
+        NairaTransaction.create(data).exec(function(err) {
             if (err) {
                 return res.json(200, { status: 'Error', msg: 'Transaction failed', reason: err });
             }
             return res.json(200, { status: 'success' });
+        });
+    },
+    
+    confirmFunding: function(req, res) {
+        NairaTransaction.update({ id: req.param('id') }, { status: 'confirmed' }).exec(function(err) {
+            if (err) {
+                return res.json(200, { status: 'Error' });
+            }
+            return res.json(200, { status: 'success' });  
         });
     }
 };

@@ -1,6 +1,7 @@
 {% extends '../theme.swig' %}
 {% set title = 'Exchange' %}
 {% block body %}
+<script type="text/javascript" src="/js/plugins/numeral.min.js"></script>	
 <style>
 	#chart-canvass {
 		min-height: 350px;
@@ -19,7 +20,7 @@
 		padding: 15px 8px;
 	}
 	
-	.buy tr td, .sell tr td {
+	.buy tr td, .sell tr td, .tbl-order tr td {
 		color: #f0f0f0;
 	}
 
@@ -46,6 +47,18 @@
 	<div class="row" style="margin-top: 100px !important;">
 		<div class="col-md-2">
 			<div class="trade-header">Order Book</div>
+			<div class="inner-div">
+				<div class="row">
+						<div class="col-md-6"><strong>NGN Price</strong></div>
+						<div class="col-md-6 text-right"><strong>BTC Qty</strong></div>
+					</div>
+				{% for offer in offer_spread %}
+					<div class="row">
+						<div class="col-md-6">{{ offer.amount_per_btc }}</div>
+						<div class="col-md-6 text-right">{{ offer.btc_qty }}</div>
+					</div>
+				{% endfor %}	
+			</div>
 		</div>
 
 		<div class="col-md-8">
@@ -84,8 +97,8 @@
 							<input type="hidden" name="trade_opt" id="trade-opt" value="Buy" />
 							<input type="hidden" id="sell-fees" value="{{ sails.fees.sell_btc }}" />
 							<input type="hidden" id="buy-fees" value="{{ sails.fees.order_btc }}" />
-							<input type="hidden" id="ngn-balance" value="{{ req.session.naira_avaliable }}" />
-							<input type="hidden" id="btc-balance" value="{{ req.session.coinBalance }}" />
+							<input type="hidden" id="ngn-balance" value="{{ req.session.naira_available }}" />
+							<input type="hidden" id="btc-balance" value="{{ req.session.coinAvailableBalance }}" />
 						</form>
 						<table class="buy">
 							<tr>
@@ -96,7 +109,7 @@
 							<tr>
 								<td>Available balance:</td>
 								<td>NGN</td>
-								<td id="ng-balance" class="text-right">0.00</td>
+								<td id="ng_balance" class="text-right">{{ req.session.naira_available }}</td>
 							</tr>
 							<tr>
 								<td>Estimated fees:</td>
@@ -113,7 +126,7 @@
 							<tr>
 								<td>Available balance:</td>
 								<td>BTC</td>
-								<td id="btc-balance" class="text-right">0.00</td>
+								<td id="btc-balance" class="text-right">{{ req.session.coinAvailableBalance }}</td>
 							</tr>
 							<tr>
 								<td>Sales total:</td>
@@ -127,9 +140,9 @@
 							</tr>
 						</table>
 						{% if req.session.userId %}
-							<button type="button" class="btn btn-info btn-block btn-sm" style="margin-top: 7px" id="order-btn">Place Order</button>
+							<button type="button" class="btn btn-info btn-block btn-sm" style="margin-top: 7px" id="order-btn" disabled>Place Order</button>
 						{% else %}
-							<a href="/signin" class="btn btn-info btn-block btn-sm" style="margin-top: 7px">Sign in to trade</a>
+							<a href="/user/signin" class="btn btn-info btn-block btn-sm" style="margin-top: 7px">Sign in to trade</a>
 						{% endif %}	
 					</div>
 				</div>
@@ -139,16 +152,42 @@
 						<div class="pull-right">Open</div>
 					</div>
 					<div class="inner-div">
-						<table>
+						<table class="tbl-order">
 							<thead>
 								<tr>
-									<th></th>
+									<th>Description</th>
+									<th class="text-right">Required BTC</th>
+									<th class="text-right">Asking Price</th>
+									<th class="text-right">Total Amount</th>
+									<th class="text-right">Fees</th>
+									<th class="text-center">Created</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td></td>
-								</tr>
+								{% for order in orders %}
+									{% if order.owner == req.session.userId %}
+										{% set amount = order.amount_per_btc * order.btc_amount %}
+										<tr>
+											<td>BTC Order</td>
+											<td class="text-right">{{ order.btc_amount }}</td>
+											<td class="text-right">{{ order.amount_per_btc }}</td>
+											<td class="text-right">{{ amount }}</td>
+											<td class="text-right">{{ order.fees }}</td>
+											<td class="text-center">{{ order.createdAt | date('d-m-Y') }}</td>
+										</tr>
+									{% endif %}	
+								{% endfor %}
+								{% for offer in offers %}
+									{% set amount = offer.amount_per_btc * offer.btc_qty %}
+									<tr>
+										<td>BTC Offer</td>
+										<td class="text-right">{{ offer.btc_qty }}</td>
+										<td class="text-right">{{ offer.amount_per_btc }}</td>
+										<td class="text-right">{{ amount }}</td>
+										<td class="text-right">{{ offer.fees }}</td>
+										<td class="text-center">{{ offer.createdAt | date('d-m-Y') }}</td>
+									</tr>	
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -179,29 +218,7 @@ $(function () {
 // update estimated cost and fees
 var btc, ngn;
 $("#btc_qty, #prefered_amount").keyup(function() {
-	btc = $("#btc_qty").val();
-	ngn = $("#prefered_amount").val();
-
-	var selling_fees = $("#sell-fees").val() / 100;
-	var buying_fees = $("#buy-fees").val() / 100;
-	var naira_balance = +$("#ngn-balance").val() || 0.00;
-	var btc_balance = $("#btc-balance").val();
-	var trade_opt = $("#trade-opt").val();
-
-	if (trade_opt == 'Buy') {
-		buying_fees = (buying_fees * btc).toFixed(8);
-		$(".buy").find("#est-btc").text(buying_fees);
-		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
-		$(".buy").find("#ng-balance").text(naira_balance);
-		$("#order-btn").text("Place Order");
-	} else if (trade_opt == 'Sell') {
-		selling_fees = (selling_fees * btc).toFixed(8);
-		$(".sell").find("#est-btc").text(selling_fees);
-		$(".sell").find("#btc-required").text(btc);
-		$(".sell").find("#btc-balance").text(btc_balance);
-		$(".sell").find("#sales-total").text(numeral(ngn * btc).format('0,0.00'));
-		$("#order-btn").text("Post Offer");
-	}
+	calculateTrade();
 });
 
 
@@ -213,16 +230,21 @@ $(".btn-sell").click(function(e) {
 	$(".buy").addClass('hidden');
 	$(".sell").removeClass('hidden');
 	$(".btn-buy").removeClass('trade-btn-active');
+	$("#order-btn").text("Post Offer");
+	calculateTrade();
 });
 
 
 $(".btn-buy").click(function(e) {
 	e.preventDefault();
+	calculateTrade();
 	$("#trade-opt").val('Buy');
 	$(this).addClass('trade-btn-active');
 	$(".sell").addClass('hidden');
 	$(".buy").removeClass('hidden');
 	$(".btn-sell").removeClass('trade-btn-active');
+	$("#order-btn").text("Place Order");
+	calculateTrade();
 });
 
 
@@ -249,4 +271,41 @@ $("#form-trade").submit(function(e) {
 $("#order-btn").click(function() {
 	$("#form-trade").submit();
 });
+
+
+function calculateTrade() {
+	btc = $("#btc_qty").val();
+	ngn = $("#prefered_amount").val();
+
+	var selling_fees = $("#sell-fees").val() / 100;
+	var buying_fees = $("#buy-fees").val() / 100;
+	var naira_balance = numeral($("#ngn-balance").val()) || 0.00;
+	var btc_balance = $("#btc-balance").val();
+	var trade_opt = $("#trade-opt").val();
+console.log(naira_balance);
+	if (trade_opt == 'Buy') {
+		buying_fees = (buying_fees * btc).toFixed(8);
+		$(".buy").find("#est-btc").text(buying_fees);
+		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
+		$(".buy").find("#ng-balance").text(naira_balance);
+		// manipulate submit button
+		if (ngn < naira_balance) {
+			$("#order-btn").prop("disabled", false);
+		} else {
+			$("#order-btn").prop("disabled", true);
+		}
+	} else if (trade_opt == 'Sell') {
+		selling_fees = (selling_fees * btc).toFixed(8);
+		$(".sell").find("#est-btc").text(selling_fees);
+		$(".sell").find("#btc-required").text(btc);
+		$(".sell").find("#btc-balance").text(btc_balance);
+		$(".sell").find("#sales-total").text(numeral(ngn * btc).format('0,0.00'));
+		// manipulate submit button
+		if (btc < btc_balance) {
+			$("#order-btn").prop("disabled", false);
+		} else {
+			$("#order-btn").prop("disabled", true);
+		}
+	}
+}
 {% endblock %}

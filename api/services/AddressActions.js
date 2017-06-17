@@ -10,13 +10,13 @@ module.exports = {
                 user_id: user_id,
                 status: 'Unused'
             };
-            GeneratedAddress.create(data).exec(function(err, addr) {
+            GeneratedAddress.create(data).exec(function(err) {
                 if (err) sendMail.sendErrMsg(err, data);
             });
         }
     },
 
-    saveBTCTransaction: function(address, amount, sender, receiver, fee, desc, tnx_id, tnx_hash, notice, success) {
+    saveBTCTransaction: function(address, amount, sender, receiver, fee, desc, tnx_id, notice) {
         var data = {
             address: address,
             btc: amount,
@@ -25,13 +25,12 @@ module.exports = {
             description: desc,
             fee: fee,
             tnx_id: tnx_id,
-            tnx_hash: tnx_hash,
-            notice: notice,
-            success: success
+            notice: notice
         };
-        BitcoinTransaction.create(data).exec(function(err, tnx) {
+        BitcoinTransaction.create(data).exec(function(err) {
             if (err) {
                 sendMail.sendErrMsg(err, data);
+                console.log(err);
             }
         });
     }

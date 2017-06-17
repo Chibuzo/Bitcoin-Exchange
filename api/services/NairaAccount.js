@@ -21,8 +21,8 @@ module.exports = {
 
                     debit_tnx.forEach(function (tnx) {
                         total_debit_balance = +tnx.amount || 0;
-                        if (tnx.status == 'confirmed')
-                            total_debit += +tnx.amount || 0;
+                        //if (tnx.status == 'confirmed') debit doesn't need to be confirmed
+                        total_debit += +tnx.amount || 0;
                     });
                     var balance = {
                         total: formatCurrency(total_credit_balance - total_debit_balance),
@@ -33,4 +33,26 @@ module.exports = {
             });
         });
     },
+    
+    transaction: function(t_type, payment_opt, desc, amount, user_id, payee_name) {
+        return new Promise(function(resolve, reject) {
+            var data = {
+                tnx_type: t_type,
+                payment_opt: payment_opt,
+                description: desc,
+                amount: amount,
+                user_id: user_id,
+                payee_name: payee_name,
+                status: 'Pending'
+            };
+            NairaTransaction.create(data).exec(function(err, tnx) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                var obj = { status: 'success', tnx_id: tnx.id };
+                return resolve(obj);
+            });
+        });
+    }
 }

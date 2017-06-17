@@ -11,7 +11,7 @@ module.exports = {
         tnx_type: {
             type: 'string'  // debit/credit
         },
-
+        
         payment_opt: {
             type: 'string'  // Deposit/transfer
         },
@@ -32,7 +32,7 @@ module.exports = {
             type: 'string'
         },
 
-        user_id: {
+        user: {
             model: 'user'
         },
 
@@ -55,9 +55,14 @@ module.exports = {
         status: {
             type: 'string'  // pending/ confirmed
         },
+        
+        payments: {
+            collection: 'payment'
+        },
 
-        deleted: {
-            type: 'boolean'
+        cancelled: {
+            type: 'boolean',
+            defaultsTo: false
         }
     }
 };

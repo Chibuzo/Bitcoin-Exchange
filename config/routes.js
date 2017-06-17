@@ -47,6 +47,8 @@ module.exports.routes = {
     'POST /wallet/send': 'BitcoinTransactionController.sendBTC',
 
     'GET /transaction/btc': 'BitcoinTransactionController.getTransactions',
+    
+    'POST /naira-transaction/approve-funding': 'NairaTransactionController.confirmFunding',
 
     // Trading routes begins here
     'GET /trade/': 'TradeController.index',

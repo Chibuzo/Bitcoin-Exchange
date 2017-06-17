@@ -23,7 +23,7 @@ module.exports = {
     },
 
     getNairaTransactions: function(req, res) {
-        NairaTransaction.find().populate('user_id').exec(function(err, tnx) {
+        NairaTransaction.find().populate('user').sort({ createdAt: 'desc' }).exec(function(err, tnx) {
             if (err) {
                 return res.negotiate(err);
             }
@@ -32,7 +32,7 @@ module.exports = {
     },
 
     getBTCTransactions: function(req, res) {
-        BitcoinTransaction.find().exec(function(err, tnx) {
+        BitcoinTransaction.find().sort({ createdAt: 'desc' }).exec(function(err, tnx) {
             if (err) {
                 res.negotiate(err);
             }
@@ -41,7 +41,7 @@ module.exports = {
     },
 
     getUsers: function(req, res) {
-        User.find().exec(function(err, users) {
+        User.find().sort({ createdAt: 'desc' }).exec(function(err, users) {
             return res.view('admin/users', {'users': users});
         });
     },

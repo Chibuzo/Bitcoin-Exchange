@@ -68,6 +68,21 @@
 {% endblock %}
 
 {% block script %}
+$(".approve").click(function(e) {
+	e.preventDefault();
+	if (!confirm("Are you sure you want to confirm this payment?")) {
+		return false;
+	}
+	var $parentTr = $(this).parents('tr');
+	var id = $parentTr.attr('id');
+	$.post('/naira-transaction/approve-funding', { 'id': id }, function(d) {
+		if (d.status.trim() == 'success') {
+			$parentTr.find('td:nth-child(8)').text('Confirmed');
+		}
+	});
+});
+
+
 $(function() {
 	$('[data-toggle="tooltip"]').tooltip();
 });
