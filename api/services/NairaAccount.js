@@ -34,8 +34,9 @@ module.exports = {
         });
     },
     
-    transaction: function(t_type, payment_opt, desc, amount, user_id, payee_name) {
+    transaction: function(t_type, payment_opt, desc, amount, user_id, payee_name, status) {
         return new Promise(function(resolve, reject) {
+            status = status === undefined ? 'Confirmed' : status;
             var data = {
                 tnx_type: t_type,
                 payment_opt: payment_opt,
@@ -43,7 +44,7 @@ module.exports = {
                 amount: amount,
                 user_id: user_id,
                 payee_name: payee_name,
-                status: 'Pending'
+                status: status
             };
             NairaTransaction.create(data).exec(function(err, tnx) {
                 if (err) {

@@ -54,8 +54,12 @@ module.exports.routes = {
     'GET /trade/': 'TradeController.index',
     
     'POST /offer/sell': 'OfferController.makeOffer',
+    
+    'POST /offer/cancel/:id': 'OfferController.cancelOffer',
 
     'POST /order/buy': 'OrderController.placeOrder',
+    
+    'POST /order/cancel/:id': 'OrderController.cancelOrder',
 
     'GET /wallet/create': 'ClientController.create',
 

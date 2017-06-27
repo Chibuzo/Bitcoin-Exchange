@@ -160,7 +160,10 @@ module.exports = {
     },
 
     settings: function(req, res) {
-
+        User.findOne(req.session.userId, function foundUser(err, user) {
+            if (err) return res.negotiate(err);
+            return res.view('user/settings', { user: user });
+        });
     }
 };
 

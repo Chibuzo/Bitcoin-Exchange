@@ -42,6 +42,14 @@ module.exports = {
 			});*/
             return res.json(200, { status: 'success', offer_id: offer.id });
         });
-    }
+    },
+	
+	cancelOffer: function(req, res) {
+		var id = req.param('id');
+		Offer.destroy({ id: id, status: 'Open' }).exec(function(err) {
+			if (err) return;
+			return res.json(200, { status: 'success' });
+		});
+	}
 };
 

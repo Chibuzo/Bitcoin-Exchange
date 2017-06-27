@@ -24,7 +24,8 @@ module.exports = {
         
 		// lock the required amount required for this order
 		var tnx_desc = "BTC purchase";
-		NairaAccount.transaction('Debit', 'transfer', tnx_desc, param('prefered_amount'), req.session.userId).then(function(ret) {
+		var tnx_amt = param('prefered_amount') * param('btc_qty');
+		NairaAccount.transaction('Debit', 'transfer', tnx_desc, tnx_amt, req.session.userId).then(function(ret) {
 			if (ret.status == 'success') {
 				var data = {
 					owner: req.session.userId,
@@ -47,6 +48,17 @@ module.exports = {
 			}
 		});
 		return res.json(200, { status: 'success' });
-    }
+    },
+	
+	cancelOrder: function(req, res) {
+		var id = req.param('id');
+		Order.destroy({ id: id, status: 'Open' }).exec(function(err, order) {
+			if (err) return;
+			NairaTransaction.destroy({ id: order[0].transaction }).exec(function(err) {
+				if (err) console.log(err);	
+			});
+			return res.json(200, { status: 'success' });
+		});
+	}
 };
 

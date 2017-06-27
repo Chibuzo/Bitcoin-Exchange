@@ -15,6 +15,10 @@
 		font-weight: bold;
 		border-radius: 3px;
 	}
+	
+	#offers {
+		min-height: 270px;
+	}
 
 	.inner-div {
 		padding: 15px 8px;
@@ -22,6 +26,10 @@
 	
 	.buy tr td, .sell tr td, .tbl-order tr td {
 		color: #f0f0f0;
+	}
+	
+	.offer-ng-amt, .offer-btc-qty, .order-ng-amt, .order-btc-qty {
+		cursor: pointer;
 	}
 
 	table tr td {
@@ -46,22 +54,36 @@
 <div class="container-fluid">
 	<div class="row" style="margin-top: 100px !important;">
 		<div class="col-md-2">
-			<div class="trade-header">Order Book</div>
-			<div class="inner-div">
+			<div class="trade-header">Available Offer</div>
+			<div class="inner-div" id="offers">
 				<div class="row">
 						<div class="col-md-6"><strong>NGN Price</strong></div>
 						<div class="col-md-6 text-right"><strong>BTC Qty</strong></div>
 					</div>
 				{% for offer in offer_spread %}
-					<div class="row">
-						<div class="col-md-6">{{ offer.amount_per_btc }}</div>
-						<div class="col-md-6 text-right">{{ offer.btc_qty }}</div>
+					<div class="row offer-row">
+						<div class="col-md-6 offer-ng-amt">{{ offer.amount_per_btc }}</div>
+						<div class="col-md-6 text-right offer-btc-qty">{{ offer.btc_qty }}</div>
+					</div>
+				{% endfor %}	
+			</div>
+			
+			<div class="trade-header">Current Orders</div>
+			<div class="inner-div" id="offers">
+				<div class="row">
+					<div class="col-md-6"><strong>NGN Price</strong></div>
+					<div class="col-md-6 text-right"><strong>BTC Qty</strong></div>
+				</div>
+				{% for order in order_spread %}
+					<div class="row order-row">
+						<div class="col-md-6 order-ng-amt">{{ order.amount_per_btc }}</div>
+						<div class="col-md-6 text-right order-btc-qty">{{ order.btc_amount }}</div>
 					</div>
 				{% endfor %}	
 			</div>
 		</div>
 
-		<div class="col-md-8">
+		<div class="col-md-7">
 			<div class="row">
 				<div class="trade-header">Chart</div>
 				<div class="col-md-12">
@@ -161,31 +183,34 @@
 									<th class="text-right">Total Amount</th>
 									<th class="text-right">Fees</th>
 									<th class="text-center">Created</th>
+									<th class="text-center">Cancel</th>
 								</tr>
 							</thead>
 							<tbody>
 								{% for order in orders %}
 									{% if order.owner == req.session.userId %}
 										{% set amount = order.amount_per_btc * order.btc_amount %}
-										<tr>
+										<tr id="{{ order.id }}">
 											<td>BTC Order</td>
 											<td class="text-right">{{ order.btc_amount }}</td>
 											<td class="text-right">{{ order.amount_per_btc }}</td>
 											<td class="text-right">{{ amount }}</td>
 											<td class="text-right">{{ order.fees }}</td>
 											<td class="text-center">{{ order.createdAt | date('d-m-Y') }}</td>
+											<td class="text-center"><a href="" class="cancel-order"><i class="fa fa-times fa-lg"></i></a></td>
 										</tr>
 									{% endif %}	
 								{% endfor %}
 								{% for offer in offers %}
 									{% set amount = offer.amount_per_btc * offer.btc_qty %}
-									<tr>
+									<tr id="{{ offer.id }}">
 										<td>BTC Offer</td>
 										<td class="text-right">{{ offer.btc_qty }}</td>
 										<td class="text-right">{{ offer.amount_per_btc }}</td>
 										<td class="text-right">{{ amount }}</td>
 										<td class="text-right">{{ offer.fees }}</td>
 										<td class="text-center">{{ offer.createdAt | date('d-m-Y') }}</td>
+										<td class="text-center"><a href="" class="cancel-offer"><i class="fa fa-times fa-lg"></i></a></td>
 									</tr>	
 								{% endfor %}
 							</tbody>
@@ -195,10 +220,22 @@
 			</div>
 		</div>
 
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<div class="trade-header">Recent Trades</div>
 			<div class="inner-div">
 				24 Hour Volume: BTC
+				<div class="row">
+					<div class="col-md-2"><strong>Time</strong></div>
+					<div class="col-md-5 text-right"><strong>NGN Price</strong></div>
+					<div class="col-md-5 text-right"><strong>BTC Qty</strong></div>
+				</div>
+				{% for trade in trades %}
+					<div class="row">
+						<div class="col-md-2">{{ trade.updatedAt | date('H:i') }}</div>
+						<div class="col-md-5 order-ng-amt text-right">{{ trade.amount_per_btc }}</div>
+						<div class="col-md-5 text-right order-btc-qty">{{ trade.btc_amount }}</div>
+					</div>
+				{% endfor %}	
 			</div>
 		</div>
 	</div>
@@ -237,7 +274,7 @@ $(".btn-sell").click(function(e) {
 
 $(".btn-buy").click(function(e) {
 	e.preventDefault();
-	calculateTrade();
+	//calculateTrade();
 	$("#trade-opt").val('Buy');
 	$(this).addClass('trade-btn-active');
 	$(".sell").addClass('hidden');
@@ -272,6 +309,44 @@ $("#order-btn").click(function() {
 	$("#form-trade").submit();
 });
 
+$(".order-row, .offer-row").click(function() {
+	if ($(this).attr("class") == 'order-row') {
+		$("#btc_qty").val($(this).find('order-btc-qty').text());
+		$("#prefered_amount").val($(this).find('order-ng-amt').text());
+		$('.btn-buy').click();
+	} else {
+		$("#btc_qty").val($(this).find('offer-btc-qty').text());
+		$("#prefered_amount").val($(this).find('offer-ng-amt').text());
+		$('.btn-sell').click();
+	}
+});
+
+$('.cancel-order').click(function(e) {
+	e.preventDefault();
+	if (confirm("Are you sure you want to cancel this Order?")) {
+		var $parentTr = $(this).parents('tr');
+		var id = $parentTr.attr('id');
+		$.post('/order/cancel/' + id, function(d) {
+			if (d.status.trim() == 'success') {
+				$parentTr.fadeOut();
+			}
+		}, 'JSON');
+	}
+});
+
+$('.cancel-offer').click(function(e) {
+	e.preventDefault();
+	if (confirm("Are you sure you want to cancel this Offer?")) {
+		var $parentTr = $(this).parents('tr');
+		var id = $parentTr.attr('id');
+		$.post('/offer/cancel/' + id, function(d) {
+			if (d.status.trim() == 'success') {
+				$parentTr.fadeOut();
+			}
+		}, 'JSON');
+	}
+});
+
 
 function calculateTrade() {
 	btc = $("#btc_qty").val();
@@ -282,7 +357,7 @@ function calculateTrade() {
 	var naira_balance = numeral($("#ngn-balance").val()) || 0.00;
 	var btc_balance = $("#btc-balance").val();
 	var trade_opt = $("#trade-opt").val();
-console.log(naira_balance);
+//console.log(naira_balance);
 	if (trade_opt == 'Buy') {
 		buying_fees = (buying_fees * btc).toFixed(8);
 		$(".buy").find("#est-btc").text(buying_fees);

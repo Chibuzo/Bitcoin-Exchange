@@ -1,5 +1,5 @@
 {% extends '../layout.swig' %}
-{% set title = 'Accounts' %}
+{% set title = 'SEttings' %}
 {% block body %}
 
 	<style>
@@ -30,32 +30,21 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="inner">
-									<h3>BTC Account</h3><br>
-									<div>
-										Balance<br>
-										BTC 0.00
-										<br><br>
-									</div>
-									<div>
-										Available<br>
-										BTC 0.00
-									</div>
+									<h3>Personal Details</h3><br>
+									<div class="col-md-4"><i class="fa fa-user fa-lg"></i> Name</div>
+									<div class="col-md-8 pull-right">{{ user.fullname }}</div>
 									<br><hr style="margin-bottom: 8px;">
-									<a href="#" class="btn btn-primary pull-right">View Account</a>
 								</div>
 							</div>
 
 							<div class="col-md-6">
 								<div class="inner">
-									<h3>NGN Account</h3><br>
+									<h3>Security</h3><br>
 									<div>
-										Balance<br>
-										NGN 0.00
-										<br><br>
+										Two-factor Authentication
 									</div>
 									<div>
-										Available<br>
-										NGN 0.00
+										Password
 									</div>
 									<br><hr style="margin-bottom: 8px;">
 									<a href="#" class="btn btn-info pull-right" style="margin-left: 8px">Withdraw</a>

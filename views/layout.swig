@@ -94,7 +94,7 @@
                     <a href="/trade/"><i class="fa fa-exchange fa-lg fa-fw"></i> <span class="nav-label">Exchange</span></a>
                 </li>
                 <li>
-                    <a href="#/user/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
+                    <a href="/user/settings"><i class="fa fa-wrench fa-lg fa-fw"></i> <span class="nav-label">Settings</span></a>
                 </li>
                 <li class="">
                     <a href="/user/signout"><i class="fa fa-sign-out fa-lg fa-fw"></i> <span class="nav-label">Sign Out</span></a>
