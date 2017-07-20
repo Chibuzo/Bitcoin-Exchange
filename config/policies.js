@@ -20,10 +20,10 @@ module.exports.policies = {
       create: ['isLoggedIn']
   },
 
-  UserController: {
-      /*signup: ['isLoggedOut'],
-      signin: ['isLoggedOut']*/
-  },
+  //UserController: {
+  //    /*signup: ['isLoggedOut'],
+  //    signin: ['isLoggedOut']*/
+  //},
 
   AccountController: {
       '*': 'isLoggedIn'

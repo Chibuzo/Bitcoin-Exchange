@@ -74,11 +74,11 @@ module.exports.connections = {
   *                                                                          *
   *                                                                          *
   ***************************************************************************/
-   myPostgresqlServer: {
+   pgconnection: {
      adapter: 'sails-postgresql',
      host: '127.0.0.1',
      user: 'postgres',
-     password: 'untold',
+     password: '+Uzooyibo+Un2told#',
      database: 'bitcoin'
    }
 

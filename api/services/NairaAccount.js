@@ -3,12 +3,21 @@
  */
 
 const formatCurrency = require('format-currency');
+var Promise = require('promise');
 
 module.exports = {
     getBalance: function (userId) {
         return new Promise(function(resolve, reject) {
-            NairaTransaction.find({user_id: userId, tnx_type: 'Credit'}).exec(function (err, credit_tnx) {
-                NairaTransaction.find({user_id: userId, tnx_type: 'Debit'}).exec(function (err, debit_tnx) {
+            NairaTransaction.find({ user_id: userId, tnx_type: 'Credit' }).exec(function (err, credit_tnx) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                NairaTransaction.find({ user_id: userId, tnx_type: 'Debit' }).exec(function (err, debit_tnx) {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
                     var total_credit = 0,
                         total_debit = 0,
                         total_credit_balance = 0,
@@ -25,8 +34,8 @@ module.exports = {
                         total_debit += +tnx.amount || 0;
                     });
                     var balance = {
-                        total: formatCurrency(total_credit_balance - total_debit_balance),
-                        available: formatCurrency(total_credit - total_debit)
+                        total: total_credit_balance === 0 ? 0 : formatCurrency(total_credit_balance - total_debit_balance),
+                        available: total_credit === 0 ? 0 : formatCurrency(total_credit - total_debit)
                     };
                     return resolve(balance);
                 });

@@ -5,6 +5,7 @@
 <style>
 	#chart-canvass {
 		min-height: 350px;
+		width: 100%;
 	}
 
 	.trade-header {
@@ -242,6 +243,7 @@
 </div>
 
 <script type="text/javascript" src="/js/plugins/numeral.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock %}
 
 {% block script %}
@@ -345,6 +347,39 @@ $('.cancel-offer').click(function(e) {
 			}
 		}, 'JSON');
 	}
+});
+
+
+$.ajax({
+  type: "GET",
+  url: "https://api.blockchain.info/charts/transactions-per-second?timespan=5weeks&rollingAverage=8hours&format=json",
+  //contentType: 'application/json; charset=utf-8',
+  dataType: 'json',
+    crossDomain: true,
+  success: function(data) {
+    console.log(data);
+  }
+});
+
+
+Highcharts.chart('chart-canvass', {
+	title: {
+        text: null
+    },
+	
+	subtitle: {
+        text: 'Average NGN market price across major bitcoin exchanges.'
+    },
+	
+    xAxix: {
+		categories: []
+	},
+
+    series: [{
+        name: 'Installation',
+        data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+    }]
+
 });
 
 

@@ -1,30 +1,41 @@
 {% extends '../theme.swig' %}
 {% set title = 'Member Sign In' %}
 {% block body %}
-	<section class="container" style="margin-top: 140px">
-		<div class="row">
-			<div class="auth-panel">
-				<h2 class="text-center">SIGN IN</h2><br>
-				<form action="" method="post" class="form-vertical" id="signin">
-					<div class="form-group">
-						<label>EMAIL</label>
-						<input type="email" name="email" class="form-control input-lg" required />
-					</div>
-					<div class="form-group">
-						<label>PASSWORD</label>
-						<input type="password" name="password" class="form-control input-lg" required />
-					</div>
-					<div class="alert alert-danger hidden"></div>
-					<button type="submit" class="btn btn-primary input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; SIGN IN </button>
-				</form>
-			</div>
-		</div>
-	</section>
+<style>
+  .s-header__navbar {
+      background: #fff;
+  }
+</style>  
+  
+  <div class="g-bg-color--sky-light">
+      <div class="container g-padding-y-80--xs g-padding-y-125--sm">
+          <div class="g-text-center--xs g-margin-b-80--xs">
+              <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--red g-letter-spacing--2 g-margin-b-25--xs" style="margin-top: 30px">Already A Member?</p>
+              <h2 class="g-font-size-32--xs g-font-size-36--md">Welcome Back</h2>
+          </div>
+          <form action="/user/signin" method="post" class="form-vertical" id="signin">
+              <div class="row g-margin-b-40--xs">
+                  <div class="col-sm-6 col-sm-offset-3 g-margin-b-20--xs g-margin-b-0--md">
+                      <div class="g-margin-b-20--xs">
+                          <input type="email" name="email" class="form-control s-form-v2__input g-radius--50" placeholder="* Email" required>
+                      </div>
+                      <div class="g-margin-b-20--xs">
+                          <input type="password" name="password" class="form-control s-form-v2__input g-radius--50" placeholder="* Password" required>
+                      </div>
+											
+											<div class="alert alert-danger hidden"></div>
+                  </div>
+              </div>
+              <div class="g-text-center--xs">
+                  <button type="submit" class="text-uppercase s-btn s-btn--md s-btn--red-bg g-radius--50 g-padding-x-80--xs"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Login</button>
+              </div>
+          </form>
+      </div>
+  </div>
 {% endblock %}
 
 {% block script %}
 	{#<script>#}
-	$('body').css('background-color', '#2f4050');
 
 	$("#signin").submit(function(e) {
 		e.preventDefault();

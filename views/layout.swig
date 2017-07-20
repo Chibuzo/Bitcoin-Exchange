@@ -9,8 +9,7 @@
 
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href="/styles/font-awesome.min.css" rel="stylesheet">
-    <link href="/stylel/plugins/bootstrap-datepicker3.css" rel="stylesheet">
-
+    
     <link href="/styles/animate.css" rel="stylesheet">
     <link href="/styles/style.css" rel="stylesheet">
     <style>
@@ -28,6 +27,10 @@
             background: #fff;
             border-radius: 2px;
             overflow: auto;
+        }
+        
+        .panel .col-md-6 .inner .fa {
+            margin-right: 10px;
         }
 
         .opt-icons .fa {
@@ -239,7 +242,6 @@
 
 <!-- Mainly scripts -->
 <script src="/js/jquery-2.1.1.js"></script>
-<script src="/js/bootstrap-datepicker.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>

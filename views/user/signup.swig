@@ -1,43 +1,48 @@
 {% extends '../theme.swig' %}
 {% set title = 'New User Sign up' %}
-<style>
-body.landing-page { background-color: #2f4050 !important; }
-</style>
 {% block body %}
-<section class="container" style="margin-top: 60px">
-    <div class="row">
-        <div class="auth-panel">
-            <h2 class="text-center">SIGN UP</h2><br>
-			<div class="alert alert-success hidden" id="confirm">Thank you for signing up with us. Please check your email for activation message.</div>
-			<form action="/user/signup" method="post" class="form-vertical" id="signup">
-                <div class="form-group">
-                    <label for="fullname">FULL NAME</label>
-                    <input type="text" name="fullname" id="fullname" class="form-control input-lg" required />
-                </div>
-                <div class="form-group">
-                    <label for="email">EMAIL</label>
-                    <input type="email" name="email" id="email" class="form-control input-lg" />
-                </div>
-                <div class="form-group">
-                    <label for="password">PASSWORD</label>
-                    <input type="password" name="password" id="password" class="form-control input-lg" required />
-                </div>
+ <style>
+  .s-header__navbar {
+      background: #fff;
+  }
+</style>
+ 
+<div class="g-bg-color--sky-light">
+      <div class="container g-padding-y-80--xs g-padding-y-125--sm">
+          <div class="g-text-center--xs g-margin-b-80--xs">
+              <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--red g-letter-spacing--2 g-margin-b-25--xs" style="margin-top: 10px">Not Yet A Member?</p>
+              <h2 class="g-font-size-32--xs g-font-size-36--md">Sign Up</h2>
+          </div>
+          <form action="" method="post" class="form-vertical" id="signup">
+              <div class="row g-margin-b-40--xs">
+                  <div class="col-sm-6 col-sm-offset-3 g-margin-b-20--xs g-margin-b-0--md">
+                      <div class="g-margin-b-20--xs">
+                          <input type="text" name="fullname" class="form-control s-form-v2__input g-radius--50" placeholder="* Fullname" required>
+                      </div>
+                      <div class="g-margin-b-20--xs">
+                          <input type="email" name="email" class="form-control s-form-v2__input g-radius--50" placeholder="* Email" required>
+                      </div>
+                      <div class="g-margin-b-20--xs">
+                          <input type="password" name="password" id="password" class="form-control s-form-v2__input g-radius--50" placeholder="* Password" required>
+                      </div>
+                      <div class="g-margin-b-20--xs">
+                          <input type="password" name="verify_password" id="verify_password" class="form-control s-form-v2__input g-radius--50" placeholder="* Retype Password" required>
+                      </div>
+																						
+																						<div class="alert alert-danger hidden"></div>
+                  </div>
+              </div>
+              <div class="g-text-center--xs">
+                  <button type="submit" class="text-uppercase s-btn s-btn--md s-btn--red-bg g-radius--50 g-padding-x-80--xs">Sign Up</button>
+              </div>
+          </form>
+      </div>
+  </div>  
 
-                <div class="form-group">
-                    <label for="verify_password">VERIFY PASSWORD</label>
-                    <input type="password" name="verify_password" id="verify_password" class="form-control input-lg" required />
-                </div>
-				<div class="alert alert-danger hidden"></div>
-                <button type="submit" class="btn btn-primary input-lg btn-block"> SIGN UP </button>
-            </form>
-        </div>
-    </div>
-</section>
 {% endblock %}
 
 {% block script %}
 {#<script>#}
-$('body').css('background-color', '#2f4050');
 $("#signup").submit(function(e) {
 	e.preventDefault();
 	var $this = $(this);

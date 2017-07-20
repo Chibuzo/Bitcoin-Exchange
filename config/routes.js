@@ -1,7 +1,7 @@
 module.exports.routes = {
 
     '/': {
-        view: 'homepage'
+        view: 'index'
     },
 
     'GET /user/signin': {
@@ -12,13 +12,19 @@ module.exports.routes = {
         view: 'user/signup'
     },
 
-    'PUT /user/signin': 'UserController.signin',
+    //'POST /user/signin': 'UserController.signin',
+    
+    'GET /user/activate/:email/:hash': 'UserController.activateAccount',
 
     'GET /user/signout': 'UserController.signout',
 
     'GET /user/dashboard': 'UserController.dashboard',
 
     'GET /user/setting': 'UserController.settings',
+    
+    'POST /userlevel/add-idcard': 'UserLevelController.addIdCard',
+    
+    'POST /userlevel/add-residence-proof': 'UserLevelController.addResidentialProof',
 
     'GET /admin/dashboard': 'AdminController.dashboard',
 
@@ -62,5 +68,7 @@ module.exports.routes = {
     'POST /order/cancel/:id': 'OrderController.cancelOrder',
 
     'GET /wallet/create': 'ClientController.create',
+    
+    'GET /sendMail/': 'MailTestController.sendMail'
 
 };

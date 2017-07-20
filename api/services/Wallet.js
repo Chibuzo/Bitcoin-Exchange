@@ -3,6 +3,10 @@
  */
 
 var Client = require('bitcore-wallet-client');
+const crypto = require('crypto');
+const hash = crypto.createHash('sha256');
+const aes256 = require('nodejs-aes256');
+var Promise = require('promise');
 
 var BWS_INSTANCE_URL = 'https://bws.bitpay.com/bws/api';
 var NETWORK = 'testnet';
@@ -21,8 +25,9 @@ module.exports = {
                     console.log('error: ', err);
                     return reject(err);
                 }
+                var key = hash.update(passphrase).digest('base64');
                 var wallet = {
-                    mnemonic: client.getMnemonic(),
+                    mnemonic: aes256.encrypt(key, client.getMnemonic()),
                     wallet_id: ret.walletId
                 };
                 return resolve(wallet);
@@ -30,9 +35,11 @@ module.exports = {
         });
     },
     
-    getBalance: function(encrypted_code, passphrase) {
+    getBalance: function(encrypted_mnemonic, encrypted_pswd, passphrase) {
         return new Promise(function(resolve, reject) {
-            client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
+            var key = hash.update(encrypted_pswd).digest('base64');
+            let mnemonic = aes256.decrypt(key, encrypted_mnemonic);
+            client.seedFromMnemonic(encrypted_mnemonic, { network: NETWORK, passphrase: passphrase });
             client.openWallet(function(err) {
                 if (err) {
                     console.log(err);
@@ -53,10 +60,10 @@ module.exports = {
         });
     },
     
-    generateAddress: function(encrypted_code, passphrase) {
+    generateAddress: function(mnemonic, passphrase) {
         return new Promise(function(resolve, reject) {
-            //client.seedFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase });
-            client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err) {
+            //client.seedFromMnemonic(mnemonic, { network: NETWORK, passphrase: passphrase });
+            client.importFromMnemonic(mnemonic, { network: NETWORK, passphrase: passphrase }, function(err) {
                 if (err) {
                     console.log(err);
                     return reject(err);
@@ -72,13 +79,13 @@ module.exports = {
         });
     },
     
-    sendBTC: function(encrypted_code, passphrase, send_addr, amount, msg) {
+    sendBTC: function(mnemonic, passphrase, send_addr, amount, msg) {
         var _client = new Client({
             baseUrl: BWS_INSTANCE_URL,
             verbose: false,
         });
         return new Promise(function(resolve, reject) {
-            _client.importFromMnemonic(encrypted_code, { network: NETWORK, passphrase: passphrase }, function(err) {
+            _client.importFromMnemonic(mnemonic, { network: NETWORK, passphrase: passphrase }, function(err) {
             //client.openWallet(function(err) {
                 if (err) {
                     console.log(err);

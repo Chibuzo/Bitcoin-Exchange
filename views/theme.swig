@@ -1,156 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<html lang="en" class="no-js">
+    <!-- Begin Head -->
+    <head>
+        <!-- Basic -->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>CapitalX - {{ title }}</title>
+        <meta name="keywords" content="HTML5 Theme" />
+        <meta name="description" content="Megakit - HTML5 Theme">
+        <meta name="author" content="keenthemes.com">
 
-    <title>Afiaego - {{ title }}</title>
+        <!-- Web Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i|Montserrat:400,700" rel="stylesheet">
 
-    <link href="/styles/bootstrap.min.css" rel="stylesheet">
-    <link href="/styles/font-awesome.min.css" rel="stylesheet">
+        <!-- Vendor Styles -->
+        <link href="/styles/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/styles/animate.css" rel="stylesheet" type="text/css"/>
+        <link href="/vendor/themify/themify.css" rel="stylesheet" type="text/css"/>
+        <link href="/vendor/scrollbar/scrollbar.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css"/>
+        <link href="/vendor/swiper/swiper.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/vendor/cubeportfolio/css/cubeportfolio.min.css" rel="stylesheet" type="text/css"/>
 
-    <link href="/styles/animate.css" rel="stylesheet">
-    <link href="/styles/style.css" rel="stylesheet">
-    
-    <style>
-      .auth-panel {
-        border: #ccc solid thin;
-        margin: auto;
-        width: 400px;
-        padding: 20px 20px 50px 20px;
-        margin-top: 80px;
-        border-radius: 3px;
-        background-color: #fff;
-      }
-    </style>
-</head>
-<body id="page-top" class="landing-page">
-<div class="navbar-wrapper">
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header page-scroll">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="logo" href="/"><img src="../images/logo.png" /></a>
+        <!-- Theme Styles -->
+        <link href="/styles/front_style.css" rel="stylesheet" type="text/css"/>
+        <link href="/styles/global.css" rel="stylesheet" type="text/css"/>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+        <style>
+            .navbar-default {
+                border: none;
+              }
+              
+              .navbar-nav {
+                margin-top: 7px;
+              }
+        </style>
+    </head>
+    <!-- End Head -->
+
+    <!-- Body -->
+    <body>
+
+        <!--========== HEADER ==========-->
+        <header class="navbar-fixed-top s-header js__header-sticky js__header-overlay">
+            <!-- Navbar -->
+            <div class="s-header__navbar navbar navbar-default">
+                <div class="s-header__container">
+                    <div class="s-header__navbar-row">
+                        <!--<div class="s-header__navbar-row-col">-->
+                          <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#capitalX-nav" aria-expanded="false">
+                              <span class="sr-only">Toggle navigation</span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                            </button>
+                            <div class="s-header__logo">
+                                <a href="/" class="s-header__logo-link">
+                                    <img class="s-header__logo-img s-header__logo-img-default" src="images/logo.jpg" alt="CapitalX Logo">
+                                    <img class="s-header__logo-img s-header__logo-img-shrink" src="images/logo.jpg" alt="CapitalX Logo">
+                                </a>
+                            </div>
+                          </div>
+                            <!-- Logo -->
+                            
+                            <!-- End Logo -->
+                        <!--</div>-->
+                        
+                        <div class="collapse navbar-collapse navbar-right navbar-main-collapse" id="capitalX-nav">
+                            <ul class="nav navbar-nav">
+                                <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                                <li>
+                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/trade/">Market</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/user/signin">Sign In</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/user/signup">Sign Up</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a class="page-scroll" href="#">BTC/NGN 499.694</a></li>
-                        <li><a class="page-scroll" href="/trade/">Market</a></li>
-                        <li><a class="page-scroll" href="/user/signin">Sign In</a></li>
-                        <li><a class="page-scroll" href="/user/signup">Sign Up</a></li>
-                    </ul>
+            </div>
+            <!-- End Navbar -->
+        </header>
+        <!--========== END HEADER ==========-->
+
+{% block body %}{% endblock %}
+
+</div>
+
+<!--========== FOOTER ==========-->
+        <footer class="g-bg-color--dark">
+            <!-- Links -->
+            <div class="g-hor-divider__dashed--white-opacity-lightest">
+                <div class="container g-padding-y-80--xs">
+                    <div class="row">
+                        <div class="col-sm-2 g-margin-b-20--xs g-margin-b-0--md">
+                            <h5 class="g-color--white-opacity">Company</h5>
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Home</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">About</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Contact</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-sm-2 g-margin-b-40--xs g-margin-b-0--md">
+                            <h5 class="g-color--white-opacity">Policies</h5>
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Fees</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Privacy Policy</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Terms &amp; Conditions</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-sm-2 g-margin-b-20--xs g-margin-b-0--md">
+                            <h5 class="g-color--white-opacity">Support</h5>
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="">FAQ</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="">Support</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 s-footer__logo g-padding-y-50--xs g-padding-y-0--md">
+                            <h3 class="g-font-size-18--xs g-color--white">CapitalX</h3>
+                            <p class="g-color--white-opacity">We are a creative studio focusing on culture, luxury, editorial &amp; art. Somewhere between sophistication and simplicity.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-</div>
+            <!-- End Links -->
 
-<div style="clear: both">
-{% block body %}{% endblock %}
+            <!-- Copyright -->
+            <div class="container g-padding-y-50--xs">
+                <div class="row">
+                    <div class="col-xs-6 g-color--white">
+                        &copy; CapitalX {{ Date.now() | date('Y') }}
+                    </div>
+                    <div class="col-xs-6 g-text-right--xs">
 
-</div>
-
-<section id="contact" class="gray-section contact">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-              <br><br><br>
-                <p class="m-t-sm">
-                    Follow us on social platform
-                </p>
-                <ul class="list-inline social-icon">
-                    <li><a href="#"><i class="fa fa-twitter"></i></a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-facebook"></i></a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
-                <p><strong>&copy; 2015 Afiaego</strong>
-            </div>
-        </div>
-    </div>
-</section>
+            <!-- End Copyright -->
+        </footer>
+        <!--========== END FOOTER ==========-->
 
-<!-- Mainly scripts -->
-<script src="/js/jquery-2.1.1.js"></script>
-<script src="/js/bootstrap-datepicker.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+        <!-- Back To Top -->
+        <a href="javascript:void(0);" class="s-back-to-top js__back-to-top"></a>
 
-<!-- Custom and plugin javascript -->
-<script src="/js/inspinia.js"></script>
-<script src="/js/plugins/pace/pace.min.js/"></script>
-<script src="/js/plugins/wow/wow.min.js"></script>
+        <!--========== JAVASCRIPTS (Load javascripts at bottom, this will reduce page load time) ==========-->
+        <!-- Vendor -->
+        <script type="text/javascript" src="/vendor/jquery.min.js"></script>
+        <script type="text/javascript" src="/vendor/jquery.migrate.min.js"></script>
+        <script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/vendor/jquery.smooth-scroll.min.js"></script>
+        <script type="text/javascript" src="/vendor/jquery.back-to-top.min.js"></script>
+        <script type="text/javascript" src="/vendor/scrollbar/jquery.scrollbar.min.js"></script>
+        <script type="text/javascript" src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+        <script type="text/javascript" src="/vendor/swiper/swiper.jquery.min.js"></script>
+        <script type="text/javascript" src="/vendor/waypoint.min.js"></script>
+        <script type="text/javascript" src="/vendor/counterup.min.js"></script>
+        <script type="text/javascript" src="/vendor/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+        <script type="text/javascript" src="/vendor/jquery.parallax.min.js"></script>
+<!--        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsXUGTFS09pLVdsYEE9YrO2y4IAncAO2U"></script>-->
+        <script type="text/javascript" src="/vendor/jquery.wow.min.js"></script>
 
+        <!-- General Components and Settings -->
+        <script type="text/javascript" src="/js/global.min.js"></script>
+        <script type="text/javascript" src="/js/components/header-sticky.min.js"></script>
+        <script type="text/javascript" src="/js/components/scrollbar.min.js"></script>
+        <script type="text/javascript" src="/js/components/magnific-popup.min.js"></script>
+        <script type="text/javascript" src="/js/components/swiper.min.js"></script>
+        <script type="text/javascript" src="/js/components/counter.min.js"></script>
+        <script type="text/javascript" src="/js/components/portfolio-3-col.min.js"></script>
+        <script type="text/javascript" src="/js/components/parallax.min.js"></script>
+<!--        <script type="text/javascript" src="/js/components/google-map.min.js"></script>-->
+        <script type="text/javascript" src="/js/components/wow.min.js"></script>
+        <!--========== END JAVASCRIPTS ==========-->
 
-<script>
-
-    $(document).ready(function () {
-
-        $('body').scrollspy({
-            target: '.navbar-fixed-top',
-            offset: 80
-        });
-
-        // Page scrolling feature
-        $('a.page-scroll').bind('click', function(event) {
-            var link = $(this);
-            $('html, body').stop().animate({
-                scrollTop: $(link.attr('href')).offset().top - 50
-            }, 500);
-            event.preventDefault();
-            $("#navbar").collapse('hide');
-        });
-    });
-
-    var cbpAnimatedHeader = (function() {
-        var docElem = document.documentElement,
-                header = document.querySelector( '.navbar-default' ),
-                didScroll = false,
-                changeHeaderOn = 200;
-        function init() {
-            window.addEventListener( 'scroll', function( event ) {
-                if( !didScroll ) {
-                    didScroll = true;
-                    setTimeout( scrollPage, 250 );
-                }
-            }, false );
-        }
-        function scrollPage() {
-            var sy = scrollY();
-            if ( sy >= changeHeaderOn ) {
-                $(header).addClass('navbar-scroll')
-            }
-            else {
-                $(header).removeClass('navbar-scroll')
-            }
-            didScroll = false;
-        }
-        function scrollY() {
-            return window.pageYOffset || docElem.scrollTop;
-        }
-        init();
-
-    })();
-
-    // Activate WOW.js plugin for animation on scrol
-    new WOW().init();
-
-    {% block script %} {% endblock %}
-</script>
-
-</body>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                {% block script %} {% endblock %}
+            });
+        </script>
+    </body>
+    <!-- End Body -->
 </html>

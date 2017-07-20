@@ -18,7 +18,7 @@ module.exports = {
             unique: 'true'
         },
 
-        guid: {
+        phone: {
             type: 'string',
             unique: 'true'
         },
@@ -31,16 +31,17 @@ module.exports = {
             type: 'string'
         },
 
-        deleted: {
-            type: 'boolean'
-        },
-
         admin: {
             type: 'boolean'
         },
 
         level: {
-            type: 'integer'
+            model: 'userlevel'
+        },
+        
+        pending_update: {
+            type: 'string',
+            defaultsTo: 'N'
         },
 
         // add reference to beneficiaries
@@ -70,8 +71,9 @@ module.exports = {
             via: 'owner'
         },
 
-        banned: {
-            type: 'boolean'
+        status: {
+            type: 'string',     // Inactive, Active, Deleted, Banned
+            defaultsTo: 'Inactive'
         }
     }
 };

@@ -36,7 +36,7 @@ module.exports = {
                         return res.serverError(err);
                     },        
                     success: function(encryptedPassword) {
-                        // collect ALL signup data
+                        // collect ALL signup data                        
                         var data = {
                             fullname: req.param('fullname'),
                             email: req.param('email'),
@@ -51,14 +51,7 @@ module.exports = {
                                 }
                                 return res.json(501, { status: '00', msg: err }); // couldn't be completed
                             }
-                            // create bitcoin wallet
-                            Wallet.createWallet(newUser.email, newUser.password).then(function(wallet) {
-                                User.update({ id: newUser.id }, { guid: wallet.wallet_id, mnemonic: wallet.mnemonic }).exec(function(err) {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-                                });
-                            });
+                            sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, { status: '01' });
                         });
                     }
@@ -67,21 +60,38 @@ module.exports = {
         });
     },
 
-    activateAccount: function(req, res) {
 
+    activateAccount: function(req, res) {
+        var email = new Buffer(req.param('email'), 'base64').toString('ascii');
+        console.log(email);
+        var hash = req.param('hash');
+        User.findOne({ email : email }).exec(function(err, user) {
+            if (err) return;
+            if (user) {
+                var crypto = require('crypto');
+                var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
+                if (hash == confirm_hash) {
+                    console.log('Aye');
+                    // create bitcoin wallet
+                    Wallet.createWallet(email, user.password).then(function(wallet) {
+                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.mnemonic }).exec(function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            return res.view('user/signin', { msg: 'Your email has been confirmed' });
+                        });
+                    });
+                }
+            }
+        });
     },
     
+    
     signin: function(req, res) {
-        User.findOne({
-          email: req.param('email')
-        }).exec(function(err, foundUser) {
+        User.findOne({ email: req.param('email') }).exec(function(err, foundUser) {
             if (err) return res.json(200, { status: 'Err', msg: err });
             if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
-      
-            Passwords.checkPassword({
-                passwordAttempt: req.param('password'),
-                encryptedPassword: foundUser.password
-            }).exec({
+            Passwords.checkPassword({ passwordAttempt: req.param('password'), encryptedPassword: foundUser.password }).exec({
                 error: function (err) {
                   return res.json(200, { status: 'Err', msg: err });
                 },
@@ -89,36 +99,37 @@ module.exports = {
                   return res.json(200, { status: 'Err', msg : 'User not found' });
                 },
                 success: function () {
-                    if (foundUser.deleted) {
-                        return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://afiaego.com/restore to restore your account.'" });
-                    }
-            
-                    if (foundUser.banned) {
-                        return res.json(200, { status: 'Err', msg: "'Your account has been banned, most likely for violation of the Terms of Service. Please contact us.'"});
-                    }
-
-                    // fetch Naira account balance
-                    NairaAccount.getBalance(foundUser.id).then(function(balance) {
-                        // fetch BTC account balances
-                        Wallet.getBalance(foundUser.mnemonic, foundUser.password).then(function(btc_balance) {
-                            req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
-                            req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
+                    if (foundUser.status == 'Active') {
+                        // fetch Naira account balance
+                        NairaAccount.getBalance(foundUser.id).then(function(balance) {
+                            // fetch BTC account balances
+                            var passhrase = foundUser.email + "." + foundUser.id;
+                            Wallet.getBalance(foundUser.mnemonic, foundUser.password, foundUser.password).then(function(btc_balance) {
+                                req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
+                                req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
+                                req.session.save();
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            });
+                            req.session.naira_balance = balance.total;
+                            req.session.naira_available = balance.available;
                             req.session.save();
-                        })
-                        .catch(function(err) {
+                        }).catch(function(err) {
                             console.log(err);
                         });
-                        req.session.naira_balance = balance.total;
-                        req.session.naira_available = balance.available;
-                        req.session.save();
-                    }).catch(function(err) {
-                        console.log(err);
-                    });
-                    req.session.userId = foundUser.id;
-                    req.session.fname = foundUser.fullname;
-                    req.session.admin = foundUser.admin;
-                    var user_type = foundUser.admin ? 'admin' : 'user';
-                    return res.json(200, { status: 'Ok', user_type: user_type });
+                        req.session.userId = foundUser.id;
+                        req.session.fname = foundUser.fullname;
+                        req.session.admin = foundUser.admin;
+                        var user_type = foundUser.admin ? 'admin' : 'user';
+                        return res.json(200, { status: 'Ok', user_type: user_type });
+                    } else if (foundUser.status == 'Inactive') {
+                        return res.json(200, { status: 'Err', msg: "Your account is not yet Activated."});
+                    } else if (foundUser.status == 'Deleted') {
+                        return res.json(200, { status: 'Err', msg: "Your account has been deleted." });
+                    } else if (foundUser.status == 'Banned') {
+                        return res.json(200, { status: 'Err', msg: "Your account has been banned, most likely for violation of the Terms of Service. Please contact us."});
+                    }
                 }
             });
         });
