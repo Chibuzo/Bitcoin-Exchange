@@ -155,6 +155,7 @@ a:focus {
 /*----------------------------------
   Selection
 ------------------------------------*/
+
 ::selection {
   color: #fff;
   background: #13b1cd;
@@ -1141,6 +1142,7 @@ fieldset[disabled] .s-btn {
   height: auto;
   display: table;
   padding: .75rem 1.875rem;
+  padding-bottom: 0;
 }
 
 .s-header__container:before, .s-header__container:after {
@@ -1183,7 +1185,6 @@ fieldset[disabled] .s-btn {
 
 .s-header__logo-link {
   display: inline-block;
-  padding: 1rem 0;
 }
 
 .s-header__logo-link:focus, .s-header__logo-link:hover {
@@ -1203,7 +1204,7 @@ fieldset[disabled] .s-btn {
 
 .s-header__logo-img-shrink {
   position: absolute;
-  top: 1rem;
+  top: 0.3rem;
   left: 0;
   opacity: 0;
 }
@@ -1614,6 +1615,7 @@ fieldset[disabled] .s-btn {
 
 .s-header__shrink .s-header__navbar {
   background: #fff;
+  padding-bottom: 11px;
 }
 
 .s-header__shrink .s-header__logo-img-default {

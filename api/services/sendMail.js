@@ -18,10 +18,10 @@ module.exports = {
             hash: hash
         };
         var opts = {
-            from: "Afiaego <no-reply@afiaego.com>",
-            sender: "no-reply@afiaego.com",
+            from: "CapitalX <no-reply@capitalx.ng>",
+            sender: "no-reply@capitalx.ng",
             to: user.email,
-            subject: "Afiaego Account Confirmation"
+            subject: "CapitalX Account Confirmation"
         };
         module.exports.sendEmail('activationEmail', data, opts, function(err) {
             if (err) console.log(err);
@@ -31,6 +31,22 @@ module.exports = {
     sendErrMsg: function(err, data) {
 
     },
+    
+    sendWalletBackUpEmail: function(username, email, mnemonic) {
+        var data = {
+            user: username,
+            mnemonic: mnemonic
+        };
+        var opts = {
+            from: "CapitalX <no-reply@capitalx.ng>",
+            sender: "no-reply@capitalx.ng",
+            to: email,
+            subject: "Capitalx Bitcoin Wallet backup"
+        };
+        module.exports.sendEmail('walletBackupEmail', data, opts, function(err) {
+            if (err) console.log(err);
+        });
+    }
     
    
 }

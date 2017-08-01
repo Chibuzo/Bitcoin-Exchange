@@ -30,15 +30,6 @@
         <!-- Favicon -->
         <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-        <style>
-            .navbar-default {
-                border: none;
-              }
-              
-              .navbar-nav {
-                margin-top: 7px;
-              }
-        </style>
     </head>
     <!-- End Head -->
 
@@ -61,8 +52,8 @@
                             </button>
                             <div class="s-header__logo">
                                 <a href="/" class="s-header__logo-link">
-                                    <img class="s-header__logo-img s-header__logo-img-default" src="images/logo.jpg" alt="CapitalX Logo">
-                                    <img class="s-header__logo-img s-header__logo-img-shrink" src="images/logo.jpg" alt="CapitalX Logo">
+                                    <img class="s-header__logo-img s-header__logo-img-default" src="/images/logo.png" alt="CapitalX Logo">
+                                    <img class="s-header__logo-img s-header__logo-img-shrink" src="/images/logo.png" alt="CapitalX Logo">
                                 </a>
                             </div>
                           </div>
@@ -168,9 +159,10 @@
         <script type="text/javascript" src="/vendor/counterup.min.js"></script>
         <script type="text/javascript" src="/vendor/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
         <script type="text/javascript" src="/vendor/jquery.parallax.min.js"></script>
-<!--        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsXUGTFS09pLVdsYEE9YrO2y4IAncAO2U"></script>-->
         <script type="text/javascript" src="/vendor/jquery.wow.min.js"></script>
-
+        <script type="text/javascript">
+            {% block script %}{% endblock %}
+        </script>
         <!-- General Components and Settings -->
         <script type="text/javascript" src="/js/global.min.js"></script>
         <script type="text/javascript" src="/js/components/header-sticky.min.js"></script>
@@ -180,15 +172,9 @@
         <script type="text/javascript" src="/js/components/counter.min.js"></script>
         <script type="text/javascript" src="/js/components/portfolio-3-col.min.js"></script>
         <script type="text/javascript" src="/js/components/parallax.min.js"></script>
-<!--        <script type="text/javascript" src="/js/components/google-map.min.js"></script>-->
         <script type="text/javascript" src="/js/components/wow.min.js"></script>
         <!--========== END JAVASCRIPTS ==========-->
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                {% block script %} {% endblock %}
-            });
-        </script>
+        {% block scriptTag %}{% endblock %}
     </body>
     <!-- End Body -->
 </html>

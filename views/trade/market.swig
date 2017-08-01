@@ -14,6 +14,7 @@
 		color: #666;
 		overflow: auto;
 		font-weight: bold;
+		font-size: 13px;
 		border-radius: 3px;
 	}
 	
@@ -247,7 +248,6 @@
 {% endblock %}
 
 {% block script %}
-$('body').css('background-color', '#2f4050');
 
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
@@ -349,19 +349,14 @@ $('.cancel-offer').click(function(e) {
 	}
 });
 
-
-$.ajax({
-  type: "GET",
-  url: "https://api.blockchain.info/charts/transactions-per-second?timespan=5weeks&rollingAverage=8hours&format=json",
-  //contentType: 'application/json; charset=utf-8',
-  dataType: 'json',
-    crossDomain: true,
-  success: function(data) {
-    console.log(data);
-  }
+var market_price = {{ market_price | json | safe }};
+var xrate = {{ xrate | json | safe }};
+var chart_data = [];
+market_price.values.forEach(function(data) {
+	var ngn = (data.y * xrate);
+	chart_data.push([(data.x * 1000), ngn]);
 });
-
-
+console.log(chart_data);
 Highcharts.chart('chart-canvass', {
 	title: {
         text: null
@@ -371,13 +366,27 @@ Highcharts.chart('chart-canvass', {
         text: 'Average NGN market price across major bitcoin exchanges.'
     },
 	
-    xAxix: {
-		categories: []
+    xAxis: {
+		type: 'datetime',
+		labels: {
+		  format: '{value:%e %b %Y}'
+		}
+	},
+	
+	yAxis: {
+		title: {
+			text: 'Market price'
+		},
+		labels: {
+			formatter: function () {
+				return 'N' + numeral(this.value).format('0,0');
+			}            
+		}
 	},
 
     series: [{
-        name: 'Installation',
-        data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        name: 'Price',
+        data: chart_data 
     }]
 
 });

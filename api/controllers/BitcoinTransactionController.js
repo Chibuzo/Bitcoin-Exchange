@@ -21,8 +21,9 @@ module.exports = {
                 if (result) {
                     receiver = result.user_id;
                 }                    
-				var q = req.param;	
-				Wallet.sendBTC(foundUser.mnemonic, foundUser.password, q('btc_address'), q('btc_amount'), q('description')).then(function(resp) {
+				var q = req.param;
+				var passhrase = foundUser.email + "." + foundUser.id;
+				Wallet.sendBTC(foundUser.mnemonic, foundUser.password, passhrase, q('btc_address'), q('btc_amount'), q('description')).then(function(resp) {
 					AddressActions.saveBTCTransaction(q('btc_address'), q('btc_amount'), req.session.userId, receiver, resp.fee, q('description'), resp.txid, 'message', 'Done');
 					return res.json(200, { status: 'success' });
 				})

@@ -73,12 +73,14 @@ module.exports = {
                 if (hash == confirm_hash) {
                     console.log('Aye');
                     // create bitcoin wallet
-                    Wallet.createWallet(email, user.password).then(function(wallet) {
-                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.mnemonic }).exec(function(err) {
+                    var passhrase = user.email + "." + user.id;
+                    Wallet.createWallet(email, user.password, passhrase).then(function(wallet) {
+                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic }).exec(function(err) {
                             if (err) {
                                 console.log(err);
                             }
-                            return res.view('user/signin', { msg: 'Your email has been confirmed' });
+                            sendMail.sendWalletBackUpEmail(user.fullname, user.email, wallet.raw_mnemonic);
+                            return res.view('user/signin', { msg: 'Your Email address has been confirmed' });
                         });
                     });
                 }
@@ -104,7 +106,7 @@ module.exports = {
                         NairaAccount.getBalance(foundUser.id).then(function(balance) {
                             // fetch BTC account balances
                             var passhrase = foundUser.email + "." + foundUser.id;
-                            Wallet.getBalance(foundUser.mnemonic, foundUser.password, foundUser.password).then(function(btc_balance) {
+                            Wallet.getBalance(foundUser.mnemonic, foundUser.password, passhrase).then(function(btc_balance) {
                                 req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
                                 req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
                                 req.session.save();
@@ -150,7 +152,7 @@ module.exports = {
                     id: user.id,
                     fname: user.fullname,
                     email: user.email,
-                    btc_balance: req.session.coinBalance
+                    btc_balance: req.session.coinAvailableBalance
                 }
             });
         });

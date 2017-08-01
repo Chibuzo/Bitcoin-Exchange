@@ -36,6 +36,16 @@
                   <button type="submit" class="text-uppercase s-btn s-btn--md s-btn--red-bg g-radius--50 g-padding-x-80--xs">Sign Up</button>
               </div>
           </form>
+										<div class="col-md-8 col-md-offset-2 g-margin-b-10--xs g-margin-b-0--lg" style="display:none" id="signup-confirm">
+														<div class="">
+																		<div class="s-plan-v1 g-text-center--xs g-bg-color--white g-padding-y-100--xs">
+																						<i class="g-display-block--xs g-font-size-40--xs g-color--primary g-margin-b-30--xs ti-check"></i>
+																						<h3 class="g-font-size-18--xs g-color--primary g-margin-b-30--xs">Thank you</h3>
+																						Thank you for signing up with CapitalX.<br>
+																						An email has been sent to you containing the link to confirm your account.
+																		</div>
+														</div>
+										</div>
       </div>
   </div>  
 
@@ -56,7 +66,7 @@ $("#signup").submit(function(e) {
 		if(d.status.trim() == '01') {
 			//location.href = '/user/confirmation/';
 			$("#signup").fadeOut('fast');
-			$('#confirm').removeClass('hidden');
+			$('#signup-confirm').fadeIn();
 		} else {
 			$(".alert-danger").html("<strong>Error:</strong> " + d.msg).removeClass('hidden');
 		}

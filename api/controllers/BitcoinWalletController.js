@@ -11,7 +11,8 @@ module.exports = {
             if (err) {
                 sendMail.sendErrMsg(err);
             }
-            Wallet.generateAddress(foundUser.mnemonic, foundUser.password).then(function(addr) {
+            var passhrase = foundUser.email + "." + foundUser.id;
+            Wallet.generateAddress(foundUser.mnemonic, foundUser.password, passhrase).then(function(addr) {
                 AddressActions.saveNewAddress(addr, req.session.userId);
                 res.json(200, { status: 'success', address: addr });
             }).catch(function(err) {

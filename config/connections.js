@@ -77,7 +77,7 @@ module.exports.connections = {
    pgconnection: {
      adapter: 'sails-postgresql',
      host: '127.0.0.1',
-     user: 'postgres',
+     user: 'bituser',
      password: '+Uzooyibo+Un2told#',
      database: 'bitcoin'
    }

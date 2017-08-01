@@ -256,4 +256,9 @@
         <!-- End Google Map -->
         <!--========== END PAGE CONTENT ==========-->
 
-{% endblock %}        
+{% endblock %}
+
+{% block scriptTag %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsXUGTFS09pLVdsYEE9YrO2y4IAncAO2U"></script>
+    <script type="text/javascript" src="/js/components/google-map.min.js"></script>
+{% endblock %}
