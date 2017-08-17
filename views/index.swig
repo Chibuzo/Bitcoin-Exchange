@@ -1,5 +1,5 @@
 {% extends 'theme.swig' %}
-{% set title = 'Welcome to CPBit Bitcoin Platform' %}
+{% set title = 'Welcome to CapitalX Bitcoin Exchange' %}
 {% block body %}
         <!--========== SWIPER SLIDER ==========-->
         <div class="s-swiper js__swiper-one-item">
@@ -161,7 +161,8 @@
                     </div>
                     <div class="col-md-4 col-md-offset-1">
                         <p class="g-font-size-18--xs">We are the first and leading bitcoin exchange specifically serving the Nigerian market.</p>
-                        <p class="g-font-size-18--xs">Now that your brand is all dressed up and ready to party, it's time to release it to the world. By the way, let's celebrate already.</p>
+                        <p class="g-font-size-18--xs">CapitalX is a subsidiary of Capital Plan LTD focusing majorly on cryptocurrency. Our goal is to provide
+                        reliable and easy to use tools and services for individuals and organisations to exchange and carry out trading using bitcoins.</p>
                     </div>
                 </div>
             </div>

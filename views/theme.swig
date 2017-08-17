@@ -120,7 +120,8 @@
                         </div>
                         <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 s-footer__logo g-padding-y-50--xs g-padding-y-0--md">
                             <h3 class="g-font-size-18--xs g-color--white">CapitalX</h3>
-                            <p class="g-color--white-opacity">We are a creative studio focusing on culture, luxury, editorial &amp; art. Somewhere between sophistication and simplicity.</p>
+                            <p class="g-color--white-opacity">Our goal is to provide
+                        reliable and easy to use tools and services for individuals and organisations to exchange and carry out trading using bitcoins.</p>
                         </div>
                     </div>
                 </div>

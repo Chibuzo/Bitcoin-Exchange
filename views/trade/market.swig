@@ -14,7 +14,7 @@
 		color: #666;
 		overflow: auto;
 		font-weight: bold;
-		font-size: 13px;
+		font-size: 14px;
 		border-radius: 3px;
 	}
 	
@@ -24,6 +24,11 @@
 
 	.inner-div {
 		padding: 15px 8px;
+		font-size: 13px;
+	}
+	
+	strong {
+		font-size: 13px;
 	}
 	
 	.buy tr td, .sell tr td, .tbl-order tr td {
@@ -36,6 +41,10 @@
 
 	table tr td {
 		padding: 3px;
+	}
+	
+	table tr th {
+		font-size: 13px;
 	}
 
 	table {
@@ -90,7 +99,7 @@
 				<div class="trade-header">Chart</div>
 				<div class="col-md-12">
 					<div id="chart-canvass">
-						Things here men
+						
 					</div>
 				</div>
 			</div>

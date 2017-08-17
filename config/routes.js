@@ -69,6 +69,8 @@ module.exports.routes = {
 
     'GET /wallet/create': 'ClientController.create',
     
-    'GET /sendMail/': 'MailTestController.sendMail'
+    'GET /sendMail/': 'MailTestController.sendMail',
+    
+    'GET /team': { view: 'team'}
 
 };
