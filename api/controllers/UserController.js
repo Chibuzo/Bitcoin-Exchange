@@ -44,7 +44,7 @@ module.exports = {
                             email: req.param('email'),
                             password: encryptedPassword,
                             salt: salt,
-                            level: 0
+                            level: 1
                         };
                         
                         req.session.hash = bcrypt.hashSync(req.param('password'), salt);
