@@ -16,7 +16,8 @@ module.exports = {
             'bank': req.param('bank'),
             'user_id': req.session.userId,
             'description': req.param('desc'),
-            'status': 'Pending'
+            'status': 'Pending',
+            'type': 'cashin'
         };
 
         NairaTransaction.create(data).exec(function(err) {

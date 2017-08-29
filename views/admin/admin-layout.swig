@@ -67,21 +67,16 @@
                     <a href="/admin/dashboard" class="page-link"><i class="fa fa-dashboard fa-lg fa-fw"></i> <span class="nav-label">Dashboards</span></a>
                 </li>
                 <li class="">
-                    <a href="/admin/accounts"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
+                    <a href="/admin/accounts"><i class="fa fa-credit-card fa-lg fa-fw"></i> <span class="nav-label">Accounts</span></a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-bitcoin fa-lg fa-fw"></i> <span class="nav-label">Trade Bitcoin</span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                        <li><a href="#wallet/send" class="page-link">Send</a></li>
-                        <li><a href="#wallet/receive" class="page-link">Receive</a></li>
-                        <li><a href="#wallet/buy" class="page-link">Buy</a></li>
-                    </ul>
+                    <a href="/withdrawals/pending"><i class="fa fa-money fa-lg fa-fw"></i> <span class="nav-label">Cashout Requests</span></a>
                 </li>
                 <li class="">
                     <a href="#"><i class="fa fa-list fa-lg fa-fw"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li><a href="/admin/naira-transactions">Naira Tranasactions</a></li>
-                        <li><a href="/admin/btc-transaction">BTC Transactions</a></li>
+                        <li><a href="/admin/btc-transactions">BTC Transactions</a></li>
                     </ul>
                 </li>
 

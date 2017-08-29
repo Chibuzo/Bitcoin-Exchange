@@ -13,7 +13,10 @@ module.exports = {
     },
 
     getAccounts: function(req, res) {
-        return res.view('account/index');
+        WithdrawalRequest.findOne({ user: req.session.userId, status: 'Pending' }).populate('beneficiary').exec(function(err, reqs) {
+            if (err) {}
+            return res.view('account/index', { request: reqs });
+        });
     }
 };
 

@@ -55,6 +55,50 @@ module.exports = {
             var msg = "We have recieved your proof of residential address. We will verify and get back to you. This process may take up to 48 hours";
             return res.view('message', { msg: msg, alert_type: 'alert-success' });
         });
+    },
+    
+    verifyPhone: function(req, res) {
+        var phone = req.param('phone');
+        // validate phone
+        if (phone.charAt(0) == '0') {
+          phone = '234' + phone.substr(1);
+        } else if (phone.length > 13 || phone.length == 14) {
+          phone = '234' + phone.substr(4);
+        }
+        if (phone.length < 13) {
+          return res.json(200, { status: 'Error', msg: 'Invalid phone number' });
+        }
+        req.session.phone = phone;
+        // proceed
+        req.session.phone_code = Math.floor(100000 + Math.random() * 900000);
+        req.session.save();
+        var msg = req.session.phone_code + " is your CapitalX verification code";
+        var HTTP = require('machinepack-http');
+        HTTP.get({
+          url: '/tools/geturl/Sms.php',
+          baseUrl: 'http://www.multitexter.com',
+          data: { username: 'farmhubb@gmail.com', password: '61761cezeilo', sender: 'CapitalX', message: msg, flash: 1, recipients: phone }
+        }).exec({
+          error: function(err) {
+            console.log(err);
+          },
+          requestFailed: function (err) {
+            console.log(err);
+          },
+          success: function() {
+            return res.json(200, { status: 'success' });
+          }
+        });
+    },
+    
+    verifyPhoneCode: function(req, res) {
+        var code = req.param('verification_code');
+        if (code == req.session.phone_code) {
+            User.update({ id: req.session.userId }, { phone: req.session.phone, level: 1 }).exec(function() {
+                req.session.phone_code = req.session.phone = null;
+                return res.json(200, { status: 'success' });
+            });
+        }
     }
 };
 
