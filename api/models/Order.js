@@ -19,6 +19,10 @@ module.exports = {
         amount_per_btc: {
             type: 'float'
         },
+        
+        btc_address: {
+            type: 'string'
+        },
 
         fees: {
             type: 'float'

@@ -25,6 +25,7 @@ module.exports = {
             owner: req.session.userId,
             btc_qty: param('btc_qty'),
             amount_per_btc: param('prefered_amount'),
+            token: req.session.hash,
             fees: sails.fees.sell_btc,
 			status: 'Open'
         };
