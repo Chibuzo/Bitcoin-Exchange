@@ -3,6 +3,11 @@
 {% block body %}
 <script type="text/javascript" src="/js/plugins/numeral.min.js"></script>	
 <style>
+	.container-fluid {
+		padding-left: 10px;
+		padding-right: 8px;
+	}
+	
 	#chart-canvass {
 		min-height: 350px;
 		width: 100%;
@@ -10,12 +15,12 @@
 
 	.trade-header {
 		padding: 5px 8px;
-		background-color: #e0e0e0;
-		color: #666;
+		background-color: #f0f0f0;
+		/*color: #666;*/
 		overflow: auto;
 		font-weight: bold;
 		font-size: 14px;
-		border-radius: 3px;
+		/*border-radius: 3px;*/
 	}
 	
 	#offers {
@@ -29,10 +34,11 @@
 	
 	strong {
 		font-size: 13px;
+		color: #666;
 	}
 	
 	.buy tr td, .sell tr td, .tbl-order tr td {
-		color: #f0f0f0;
+		/*color: #f0f0f0;*/
 	}
 	
 	.offer-ng-amt, .offer-btc-qty, .order-ng-amt, .order-btc-qty {
@@ -184,7 +190,7 @@
 						<div class="pull-left">Open Orders</div>
 						<div class="pull-right">Open</div>
 					</div>
-					<div class="inner-div">
+					<div class="inner-div" style="overflow-x: auto">
 						<table class="tbl-order">
 							<thead>
 								<tr>

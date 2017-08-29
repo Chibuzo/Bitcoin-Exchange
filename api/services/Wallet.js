@@ -7,7 +7,7 @@ const aes256 = require('nodejs-aes256');
 var Promise = require('promise');
 
 var BWS_INSTANCE_URL = 'http://localhost:3232/bws/api';
-var NETWORK = 'livenet';
+var NETWORK = 'testnet';
 
 var client = new Client({
     baseUrl: BWS_INSTANCE_URL,

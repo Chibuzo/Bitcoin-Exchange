@@ -22,6 +22,7 @@
         <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css"/>
         <link href="/vendor/swiper/swiper.min.css" rel="stylesheet" type="text/css"/>
         <link href="/vendor/cubeportfolio/css/cubeportfolio.min.css" rel="stylesheet" type="text/css"/>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />        
 
         <!-- Theme Styles -->
         <link href="/styles/front_style.css" rel="stylesheet" type="text/css"/>

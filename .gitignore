@@ -43,6 +43,8 @@ config/local.js
 config/connections.js
 config/env/production.js
 config/api.js
+config/policies.js
+config/blueprints.js
 
 
 
