@@ -3,14 +3,14 @@ var Big = require('big.js');
 module.exports = {
 	marchOrder: function(order_id, btc_qty, amount, buyer_id) {
 		return new Promise(function(resolve, reject) {
-			// check if existing offers (at the order price/amount) can fullfil the this order bid
+			// check if existing offers (at the order price/amount) can fullfil this order bid
 			Offer.find({ amount_per_btc: amount, status: 'Open' }).groupBy('amount_per_btc').sum('btc_qty').sort({ createdAt: 'desc' }).exec(function(err, offer) {
 				if (err) {
 					console.log(err);
 					return reject('Error');
 				}
 				if (offer.length < 1) {
-					console.log('No offer');
+					//console.log('No offer');
 					return;
 				}
 				if (offer[0].btc_qty >= btc_qty) {

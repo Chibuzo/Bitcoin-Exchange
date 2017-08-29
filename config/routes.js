@@ -25,6 +25,10 @@ module.exports.routes = {
     'POST /userlevel/add-idcard': 'UserLevelController.addIdCard',
     
     'POST /userlevel/add-residence-proof': 'UserLevelController.addResidentialProof',
+    
+    'POST /userlevel/addphone': 'UserLevelController.verifyphone',
+    
+    'POST /userlevel/verify-code': 'UserLevelController.verifyPhoneCode',
 
     'GET /admin/dashboard': 'AdminController.dashboard',
 
@@ -37,12 +41,16 @@ module.exports.routes = {
     'GET /admin/naira-transactions': 'AdminController.getNairaTransactions',
 
     'GET /admin/btc-transactions': 'AdminController.getBTCTransactions',
+    
+    'GET /admin/accounts': 'AdminController.getAccounts',
 
     'GET /accounts/': 'AccountController.getAccounts',
 
-    'GET /beneficiary/': 'BeneficiaryController.getBeneficiaries',
+    'GET /beneficiary/': 'BeneficiaryController.getUserBeneficiaries',
 
     'POST /beneficiary/add': 'BeneficiaryController.addBeneficiary',
+    
+    'GET /beneficiary/getall': 'BeneficiaryController.getBeneficiaries',
 
     'POST /account/fundNairaAccount': 'NairaTransactionController.fundNairaAccount',
 
@@ -71,6 +79,18 @@ module.exports.routes = {
     
     'GET /sendMail/': 'MailTestController.sendMail',
     
-    'GET /team': { view: 'team'}
+    'GET /team': { view: 'team'},
+    
+    'GET /withdrawals/pending': 'WithdrawalRequestController.getPendingRequests',
+    
+    'GET /withdrawals/completed': 'WithdrawalRequestController.getCompletedRequests',
+    
+    'POST /withdrawal/new-request': 'WithdrawalRequestController.newRequest',
+    
+    'POST /withdrawal/mark-complete': 'WithdrawalRequestController.completeWithdrawal',
+    
+    'GET /withdrawal/cancel/:id': 'WithdrawalRequestController.cancelRequest',
+    
+    'POST /instantbuy': 'BitcoinTransactionController.instantBuy'
 
 };

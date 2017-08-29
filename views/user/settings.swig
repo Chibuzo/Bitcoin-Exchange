@@ -63,7 +63,7 @@
 				<div class="col-md-12">
 					<div class="panel">
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-7 col-md-offset-3">
 								<div class="inner">
 									<h3>Personal Details</h3><br>
 									<div class="s-row">
@@ -83,14 +83,14 @@
 										<div class="col-md-8 text-row text-right">{{ user.fullname }}</div>
 									</div>
 									<div class="s-row">
-										<div class="col-md-4 text-row"><i class="fa fa-user fa-lg fa-fw"></i> Verification</div>
-										<div class="col-md-8 text-row text-right">Level <span id="u-level">{{ user.level.level }}</span> . <a href='' id="upgrade-level">Upgrade</a></div>
+										<div class="col-md-4 text-row" style="border-bottom: none"><i class="fa fa-user fa-lg fa-fw"></i> Verification</div>
+										<div class="col-md-8 text-row text-right" style="border-bottom: none">Level <span id="u-level">{{ user.level.level }}</span> . <a href='' id="upgrade-level">Upgrade</a></div>
 									</div>
 									<br><hr style="margin-bottom: 8px;">
 								</div>
 							</div>
 
-							<div class="col-md-6">
+							<div class="hidden col-md-6">
 								<div class="inner">
 									<h3>Security</h3><br>
 									<div>
@@ -99,9 +99,7 @@
 									<div>
 										Password
 									</div>
-									<br><hr style="margin-bottom: 8px;">
-									<a href="#" class="btn btn-info pull-right" style="margin-left: 8px">Withdraw</a>
-									<a href="#fundAccountModal" data-toggle="modal" class="btn btn-primary pull-right">Fund Account</a>
+									<br>
 								</div>
 							</div>
 						</div>
@@ -121,16 +119,26 @@
 				<h4 class="modal-title" id="myModalLabel">Phone Number Verification</h4>
 			</div>
 
-			<form method="post" id="form-send-coin">
+			<form method="post" id="form-phone-verification">
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-12" id="div-phone">
 							<div class="form-group">
 								<label for="bank">Phone Number</label>
 								<input type="text" name="phone" class="form-control" placeholder="Enter a valid phone number" />
 							</div>
 						</div>
+            
+            <div class="col-md-12 hidden" id="div-phone-code">
+                <div class="alert alert-info">Your verification code has been sent to your phone number. It's valid for about 15 minutes from now</div>
+                <div class="form-group">
+                  <label for="">Verification Code</label>
+                  <input type="text" name="verification_code" class="form-control" placeholder="Enter your verification code" />
+                </div>
+            </div>
 					</div>
+          <div class="alert hidden" id="alert"></div>
+          <input type="hidden" name="opt" id="opt" value="add-phone" />
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default close-modal" data-dismiss="modal">
@@ -241,32 +249,9 @@
 
 {% endblock %}
 
-{% block script %}
-
-	$("#form-fund-account").submit(function(e) {
-	e.preventDefault();
-	var tnx_ref = generateUniqueRef(8);
-
-	$("#ph-amount").html('&#8358;' + $("#amount").val());
-	$("#ph-tnx-ref").text(tnx_ref);
-
-	$.post('/account/fundNairaAccount', $(this).serialize() + '&tnx_ref=' + tnx_ref, function(d) {
-	if (d.status.trim() == 'success') {
-	//location.replace('/account/transactions');
-	}
-	}, 'JSON');
-
-	$(".modal-body").fadeOut(function() {
-	$(this).html($("#payment_details").html()).fadeIn();
-	$("#submit-btn").text("Complete").prop("type", "button");
-	});
-	});
-
-
-	// complete funding action
-	$("#form-fund-account").on("click", "button[type='button']#submit-btn", function() {
-	location.replace('/account/transactions');
-	});
+{% block scriptTag %}
+<script type="text/javascript">
+$(document).ready(function() {  
 	
 	$("#upgrade-level").click(function(e) {
 		e.preventDefault();
@@ -280,10 +265,12 @@
 		}
 	});
 	
+  
 	$("#id-front-btn").click(function() {
 		$("#front-id").click();
 	});
 	
+  
 	$("#front-id").on('change', function () {
 		if (typeof (FileReader) != "undefined") {
 			var image_holder = $("#id-front-holder");
@@ -303,10 +290,12 @@
 		}
 	});
 	
+  
 	$("#id-back-btn").click(function() {
 		$("#back-id").click();
 	});
 	
+  
 	$("#back-id").on('change', function () {
 		if (typeof (FileReader) != "undefined") {
 			var image_holder = $("#id-back-holder");
@@ -326,8 +315,34 @@
 		}
 	});
 	
+  
 	$("#submit-id-btn").click(function() {
 		$("#id-form").submit();
 	});
-
+  
+  
+  // submit phone number
+  $("#form-phone-verification").submit(function(e) {
+      e.preventDefault();
+      if ($("#opt").val() == "add-phone") {
+          $.post('/userlevel/addphone', $(this).serialize(), function(d) {
+              if (d.status.trim()  == 'success') {
+                  $("#div-phone").addClass('hidden');
+                  $("#div-phone-code").removeClass('hidden');
+                  $("#opt").val('verify-code');
+              }
+          }, 'JSON');
+      } else if ($("#opt").val() == "verify-code") {
+          $.post('/userlevel/verify-code', $(this).serialize(), function(d) {
+              if (d.status.trim() == 'success') {
+                  location.reload();
+              } else {
+                  $("#alert").addClass("alert-danger").text("We couldn't verify your phone number. Make sure your entered the code correctly");                
+              }
+          }, 'JSON');
+      }
+  });
+  
+});
+</script>
 {% endblock %}

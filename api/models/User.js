@@ -27,6 +27,11 @@ module.exports = {
             type: 'string'
         },
         
+        salt: {
+            type: 'string',
+            unique: 'true'
+        },
+        
         mnemonic: {
             type: 'string'
         },

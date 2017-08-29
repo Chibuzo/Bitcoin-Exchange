@@ -14,6 +14,9 @@
 				</li>
 			</ol>
 		</div>
+    <div class="col-md-6">
+
+    </div>
 	</div>
 
 	<div class="wrapper wrapper-content">
@@ -34,7 +37,7 @@
 									<th>Type</th>
 									<th>Payment Method</th>
 									<th>Bank</th>
-									<th class="text-right">Amount</th>
+									<th class="text-right">Amount (&#8358;)</th>
 									<th>Status</th>
 									<th class="text-center">Action</th>
 								</tr>
@@ -43,12 +46,12 @@
 								{% for tnx in trnx %}
 									<tr id="{{ tnx.id }}">
 										<td>{{ tnx.createdAt | date('d-m-Y H:i') }}</td>
-										<td>{{ tnx.user_id.fullname }}</td>
+										<td>{{ tnx.user.fullname }}</td>
 										<td>{{ tnx.description }}</td>
 										<td>{{ tnx.tnx_type }}</td>
 										<td>{{ tnx.payment_opt }}</td>
 										<td>{{ tnx.bank }}</td>
-										<td class="text-right">&#8358;{{ tnx.amount }}</td>
+										<td class="text-right">{{ tnx.amount | formatCurrency }}</td>
 										<td>{{ tnx.status }}</td>
 										<td class="text-center opt-icons">
 											<a href="" class="approve" data-toggle="tooltip" title="Confirm payment"><i class="fa fa-check fa-lg"></i> </a>

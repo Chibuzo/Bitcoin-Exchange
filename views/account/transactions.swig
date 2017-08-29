@@ -22,7 +22,7 @@
 				<div class="col-md-12">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-							<h5>Beneficiaries</h5>
+							<h5>Naira Transactions</h5>
 							<div class="ibox-tools">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 									<i class="fa fa-filter"></i>
@@ -51,12 +51,12 @@
 								<tbody id="tb-beneficiaries">
 								{% for tnx in tranx %}
 									<tr id="{{ tnx.id }}">
-										<td>{{ tnx.createdAt | date('D M Y') }}</td>
+										<td>{{ tnx.createdAt | date('D, d M Y - H:i') }}</td>
 										<td>{{ tnx.description }}</td>
 										<td>{{ tnx.tnx_type }}</td>
 										<td>{{ tnx.payment_opt }}</td>
 										<td>{{ tnx.bank }}</td>
-										<td class="text-right">&#8358;{{ tnx.amount }}</td>
+										<td class="text-right">&#8358;{{ tnx.amount | formatCurrency }}</td>
 										<td>{{ tnx.status }}</td>
 									</tr>
 								{% endfor %}
