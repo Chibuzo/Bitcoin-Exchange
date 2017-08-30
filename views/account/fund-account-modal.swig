@@ -17,7 +17,7 @@
 									<div class="col-md-6">
 										<label for="payment-opt">Payment Option</label>
 										<select name="payment_opt" id="payment-opt" class="form-control" required>
-											<option>--</option>
+											<option value="">-- Select Payment Option --</option>
 											<option value="Deposit">Bank Deposit</option>
 											<option value="Transfer">Transfer</option>
 										</select>
@@ -25,17 +25,17 @@
 
 									<div class="col-md-6">
 										<label for="amount">Amount</label>
-										<input type="number" name="amount" id="amount" class="form-control" step="1000" required />
+										<input type="number" name="amount" id="amount" class="form-control" placeholder="Enter Amount" required />
 									</div>
 								</div>
 							</div>
 
 							<div id="transfer-div" class="hidden">
-								Give us details of the bank account you will transfer from.
+								<div class="alert alert-info">Enter the details of the bank account you will transfer from.</div>
 								<div class="form-group">
 									<label for="bank">Bank</label>
 									<select id="bank" name="bank" class="form-control">
-										<option value=""></option>
+										<option value="">-- Select your bank</option>
 										<option value="Access Bank Nigeria Plc">Access Bank Nigeria Plc</option>
 										<option value="ACCION Microfinance bank">ACCION Microfinance bank</option>
 										<option value="Aso Savings">Aso Savings</option>
@@ -72,6 +72,7 @@
 									<input type="text" name="account_number" id="account-number" class="form-control" />
 								</div>
 							</div>
+              <div class="alert alert-danger hidden"></div>
 						</div>
 						<input type="hidden" name="tnx_type" value="Credit" />
 						<input type="hidden" name="desc" value="Fund Account" />

@@ -20,6 +20,10 @@ module.exports = {
             type: 'float'
         },
 
+        token: {
+            type: 'string'
+        },
+
         fees: {
             type: 'float'
         },

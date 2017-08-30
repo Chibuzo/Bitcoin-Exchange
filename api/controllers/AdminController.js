@@ -48,7 +48,10 @@ module.exports = {
 
     settings: function(req, res) {
         AdminBankAccount.find().exec(function(err, account) {
-            return res.view('admin/settings', { 'account_details': account});
+            UserLevel.find().sort({ level: 'asc'}).exec(function(err, levels) {
+                if (err) return;
+                return res.view('admin/settings', { 'account_details': account, 'levels': levels });
+            });
         });
     },
 
@@ -63,7 +66,13 @@ module.exports = {
             if (err) {
                 return res.json(200, { status: 'error', msg: err });
             }
-            return res.json(200, { status: 'success', id: account.id })
+            return res.json(200, { status: 'success', id: account.id });
+        });
+    },
+    
+    getAccounts: function(req, res) {
+        NairaAccount.adminAccountBalance().then(function(balance) {
+            return res.view('admin/accounts', { balance: balance });
         });
     }
 }

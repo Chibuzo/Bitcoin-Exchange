@@ -122,7 +122,7 @@
 						<form action="" method="post" id="form-trade">
 							<div class="form-group">
 								<div class="input-group">
-									<span class="input-group-addon"><i class="fa fa-bitcoin"></i> </span>
+									<span class="input-group-addon"><i class="fa fa-btc"></i> </span>
 									<input type="number" name="btc_qty" id="btc_qty" class="form-control" placeholder="BTC Amount to buy" data-toggle="tooltip" title="Enter the amount of bitcoin you want to buy" data-container="body" data-placement="right" required />
 								</div>
 							</div>

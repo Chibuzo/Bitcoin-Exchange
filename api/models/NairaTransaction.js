@@ -56,8 +56,9 @@ module.exports = {
             type: 'string'  // pending/ confirmed
         },
         
-        payments: {
-            collection: 'payment'
+        type: {
+            type: 'string',  // virtual, cashout, cashin
+            defaultsTo: 'virtual'
         },
 
         cancelled: {

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Afiaego | {{ title }}</title>
+    <title>CapitalX | {{ title }}</title>
 
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href="/styles/font-awesome.min.css" rel="stylesheet">
@@ -248,13 +248,12 @@
 
 <!-- Custom and plugin javascript -->
 <script src="/js/inspinia.js"></script>
-<script src="/js/plugins/pace/pace.min.js/"></script>
+<script src="/js/plugins/pace/pace.min.js"></script>
+
+{% block scriptTag %} {% endblock %}
 
 <script type="text/javascript">
 $(document).ready(function() {
-    // load page using ajax
-
-
     {% block script %} {% endblock %}
 });
 

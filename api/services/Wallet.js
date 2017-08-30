@@ -6,7 +6,8 @@ var Client = require('bitcore-wallet-client');
 const aes256 = require('nodejs-aes256');
 var Promise = require('promise');
 
-var BWS_INSTANCE_URL = 'http://localhost:3232/bws/api';
+//var BWS_INSTANCE_URL = 'http://localhost:3232/bws/api';
+var BWS_INSTANCE_URL = 'https://bws.bitpay.com/bws/api';
 var NETWORK = 'testnet';
 
 var client = new Client({
@@ -18,7 +19,7 @@ module.exports = {
     createWallet: function (name, hashed_pswd, passphrase) {
         return new Promise(function(resolve, reject) {
             client.seedFromRandomWithMnemonic({ network: NETWORK, passphrase: passphrase });
-            client.createWallet(name, "CapitalX", 1, 1, { network: NETWORK }, function(err, ret) {
+            client.createWallet(name, "CapitalX", 1, 1, { network: NETWORK }, function(err) {
                 if (err) {
                     console.log('error: ', err);
                     return reject(err);
@@ -85,10 +86,6 @@ module.exports = {
     },
     
     sendBTC: function(encrypted_mnemonic, hashed_pswd, passphrase, send_addr, amount, msg) {
-        //var _client = new Client({
-        //    baseUrl: BWS_INSTANCE_URL,
-        //    verbose: false,
-        //});
         return new Promise(function(resolve, reject) {
             var hash = require('crypto').createHash('sha256');
             var key = hash.update(hashed_pswd).digest('base64');
@@ -133,7 +130,7 @@ module.exports = {
                                 if (memo) {
                                     console.log(memo);
                                 }
-                                console.log("Transaction was successfully broadcasted!");
+                                //console.log("Transaction was successfully broadcasted!");
                                 var response = {
                                     txid: txp.txid,
                                     fee: txp.fee,

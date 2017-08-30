@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	getBeneficiaries: function(req, res) {
+	getUserBeneficiaries: function(req, res) {
         Beneficiary.find({user_id: req.session.userId}).exec(function(err, beneficiaries) {
             return res.view('beneficiary/index', { beneficiaries: beneficiaries });
         });
@@ -28,6 +28,12 @@ module.exports = {
                 return res.json(501, { status: '00', msg: err }); // couldn't be completed
             }
             return res.json(200, { status: '01', id: account.id, bank: account.bank, account_name: account.account_name, account_number: account.account_number, createdAt: account.createdAt });
+        });
+    },
+    
+    getBeneficiaries: function(req, res) {
+        Beneficiary.find({ user_id: req.session.userId }).exec(function(err, accs) {
+            return res.json(200, { status: 'success', accounts: accs });
         });
     }
 };

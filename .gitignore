@@ -40,11 +40,15 @@
 ################################################
 
 config/local.js
+config/blueprints.js
+config/session.js
 config/connections.js
 config/env/production.js
 config/api.js
 config/policies.js
-config/blueprints.js
+config/email.js
+
+api/services/Wallet.js
 
 
 

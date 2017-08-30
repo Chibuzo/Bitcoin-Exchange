@@ -36,13 +36,18 @@ module.exports = {
                         return res.serverError(err);
                     },        
                     success: function(encryptedPassword) {
-                        // collect ALL signup data                        
+                        // collect ALL signup data
+                        const bcrypt = require('bcrypt-nodejs');
+                        var salt = bcrypt.genSaltSync();
                         var data = {
                             fullname: req.param('fullname'),
                             email: req.param('email'),
                             password: encryptedPassword,
-                            level: 0
+                            salt: salt,
+                            level: 1
                         };
+                        
+                        req.session.hash = bcrypt.hashSync(req.param('password'), salt);
                         
                         User.create(data).exec(function(err, newUser) {
                             if (err) {
@@ -72,15 +77,15 @@ module.exports = {
             if (user) {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
-                if (hash == confirm_hash) {
-                    
+                if (hash == confirm_hash) {   
                     // create bitcoin wallet
                     var passhrase = user.email + "." + user.id;
-                    Wallet.createWallet(email, user.password, passhrase).then(function(wallet) {
-                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic }).exec(function(err) {
+                    Wallet.createWallet(email, req.session.hash, passhrase).then(function(wallet) {
+                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic, level: 0 }).exec(function(err) {
                             if (err) {
                                 console.log(err);
                             }
+                            req.session.hash = null;
                             sendMail.sendWalletBackUpEmail(user.fullname, user.email, wallet.raw_mnemonic);
                             return res.view('user/signin', { msg: 'Your Email address has been confirmed' });
                         });
@@ -92,7 +97,7 @@ module.exports = {
     
     
     signin: function(req, res) {
-        User.findOne({ email: req.param('email') }).exec(function(err, foundUser) {
+        User.findOne({ email: req.param('email') }).populate('level').exec(function(err, foundUser) {
             if (err) return res.json(200, { status: 'Err', msg: err });
             if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
             Passwords.checkPassword({ passwordAttempt: req.param('password'), encryptedPassword: foundUser.password }).exec({
@@ -108,23 +113,26 @@ module.exports = {
                         NairaAccount.getBalance(foundUser.id).then(function(balance) {
                             // fetch BTC account balances
                             var passhrase = foundUser.email + "." + foundUser.id;
-                            Wallet.getBalance(foundUser.mnemonic, foundUser.password, passhrase).then(function(btc_balance) {
+                            const bcrypt = require('bcrypt-nodejs');
+                            req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
+                            Wallet.getBalance(foundUser.mnemonic, req.session.hash, passhrase).then(function(btc_balance) {
                                 req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
                                 req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
-                                req.session.save();
                             })
                             .catch(function(err) {
                                 console.log(err);
                             });
                             req.session.naira_balance = balance.total;
                             req.session.naira_available = balance.available;
-                            req.session.save();
                         }).catch(function(err) {
                             console.log(err);
                         });
                         req.session.userId = foundUser.id;
                         req.session.fname = foundUser.fullname;
+                        req.session.level = foundUser.level.level;
+                        req.session.amt_limit = foundUser.level.naira_access;
                         req.session.admin = foundUser.admin;
+                        req.session.save();
                         var user_type = foundUser.admin ? 'admin' : 'user';
                         return res.json(200, { status: 'Ok', user_type: user_type });
                     } else if (foundUser.status == 'Inactive') {
@@ -148,14 +156,52 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
-
-            return res.view('user/dashboard', {
-                me: {
-                    id: user.id,
-                    fname: user.fullname,
-                    email: user.email,
-                    btc_balance: req.session.coinAvailableBalance
-                }
+            BitcoinTransaction.find()
+            .where({
+              or: [
+                { sender: req.session.userId },
+                { receiver: req.session.userId }
+              ]
+            }).sort('createdAt DESC').populate('receiver').limit(10).exec(function(err, tnx) {
+                if (err) {}
+                //const converter = require('parallelfx');
+                //converter.getParallelRate({ from: 'USD', to: 'NGN' }).then(function(resp) {
+                //    var HTTP = require('machinepack-http');
+                //    HTTP.get({
+                //          url: '/market-price',
+                //          baseUrl: 'api.blockchain.info/charts',
+                //          data: { timespan: '1week', rollingAverage: '8hours', format: 'json' }
+                //    }).exec({
+                //          error: function(err) {
+                //            console.log(err);
+                //          },
+                //          requestFailed: function (err) {
+                //            console.log(err);
+                //          },
+                //          success: function(data) {
+                //              return res.view('user/dashboard', {
+                //                  me: {
+                //                      id: user.id,
+                //                      fname: user.fullname,
+                //                      email: user.email,
+                //                      btc_balance: req.session.coinAvailableBalance
+                //                  },
+                //                  
+                //                  market_price: data, trnx: tnx, xrate: resp
+                //              });
+                //          }
+                //    });
+                //});
+                return res.view('user/dashboard', {
+                                  me: {
+                                      id: user.id,
+                                      fname: user.fullname,
+                                      email: user.email,
+                                      btc_balance: req.session.coinAvailableBalance
+                                  },
+                                  
+                                  market_price: '', trnx: tnx, xrate: ''
+                              });
             });
         });
     },
@@ -175,7 +221,7 @@ module.exports = {
     },
 
     settings: function(req, res) {
-        User.findOne(req.session.userId, function foundUser(err, user) {
+        User.findOne({ id: req.session.userId }).populate('level').exec(function foundUser(err, user) {
             if (err) return res.negotiate(err);
             return res.view('user/settings', { user: user });
         });

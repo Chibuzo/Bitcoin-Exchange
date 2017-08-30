@@ -6,6 +6,14 @@
 	#payment-details .row .col-md-6 {
 		padding: 7px 15px;
 	}
+  
+  #beneficiary {
+    border: #e0e0e0 solid thin;
+    background: #f0f0f0;
+    font-size: 14px;
+    padding: 5px;
+    font-style: italic;
+  }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -58,7 +66,7 @@
 									NGN {{ req.session.naira_available }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
-								<a href="#" class="btn btn-info pull-right" style="margin-left: 8px">Withdraw</a>
+								<a href="#withdrawalModal" data-toggle="modal" class="btn btn-info pull-right fetch-beneficiaries" style="margin-left: 8px">Withdraw</a>
 								<a href="#fundAccountModal" data-toggle="modal" class="btn btn-primary pull-right">Fund Account</a>
 							</div>
 						</div>
@@ -102,10 +110,13 @@
 </div>
 
 {% include 'fund-account-modal.swig' %}
+{% include 'withdrawal-form-modal.swig' %}
 
 {% endblock %}
-
+{% block scriptTag %}<script src="/js/plugins/numeral.min.js"></script>  {% endblock %}
 {% block script %}
+var amt_limit = {{ req.session.amt_limit | json | safe }};
+
 $("#payment-opt").change(function() {
 	var opt = $("#payment-opt option:selected").val();
 	if (opt == 'Transfer') {
@@ -118,6 +129,24 @@ $("#payment-opt").change(function() {
 
 $("#form-fund-account").submit(function(e) {
 	e.preventDefault();
+  
+  if ($("#amount").val() > amt_limit) { 
+      $(".alert-danger")
+          .html("Deposit amount can not exceed the allowed amount for your current <strong>User Level\'s</strong> which is: <strong>&#8358;" + numeral(amt_limit).format('0,00') + "</strong>")
+          .removeClass("hidden").show().fadeOut(13000, function() {
+          $(this).addClass('hidden');
+      });
+      return false;
+  }
+  
+  if ($("#payment-opt option:selected").val() == "Transfer") {
+      if ($("#bank").val().length < 1 || $("#account-name").val().length < 1 || $("#account-number").val().length < 1) {
+          $(".alert-danger").text("Enter the full account details for the bank transfer").removeClass("hidden").show().fadeOut(9000, function() {
+              $(this).addClass('hidden');
+          });
+          return false;
+      }
+  }
 	var tnx_ref = generateUniqueRef(8);
 
 	$("#ph-amount").html('&#8358;' + $("#amount").val());
@@ -139,6 +168,45 @@ $("#form-fund-account").submit(function(e) {
 // complete funding action
 $("#form-fund-account").on("click", "button[type='button']#submit-btn", function() {
 	location.replace('/account/transactions');
+});
+
+
+// fetch beneficiaries
+$(".fetch-beneficiaries").click(function() {
+  $.get('/beneficiary/getall', function(d) {
+      if (d.status.trim() == 'success') {
+          var html = "<option value=''>-- Choose beneficiary --</option>\n";
+          $.each(d.accounts, function(i, acc) {
+              html += "<option value='" + acc.id + "'>" + acc.account_name + " - " + acc.bank + "</option>";
+          });
+          $("#beneficiary").html(html).css({'font-style': 'normal', 'background': 'none'});
+      }
+  }, 'JSON')
+});
+
+
+// submit withdrawal request
+$("#form-withdrawal").submit(function(e) {
+    e.preventDefault();
+    
+    $.post('/withdrawal/new-request', $(this).serialize(), function(d) {
+        if (d.status.trim() == 'success') {
+            $("#withdrawalModal #submit-btn").hide();
+            var feedback = "We have received you withdrawal request, within 48 hours from now your money will be sent to the beneficiary account you provided";
+            $('#withdrawalModal .modal-body').html("<div class='alert alert-success'>" + feedback + "</div>");
+        }
+    }, 'JSON');
+});
+
+
+// cancel withdrawal request
+$(".cancel-request").click(function(e) {
+    e.preventDefault();
+    if (confirm("Are you sure want to cancel this withdrawal request?")) {
+        var id = $(this).parents('tr').attr('id');
+        $.get('/withdrawal/cancel/' + id);
+        location.reload();
+    }
 });
 
 {% endblock %}

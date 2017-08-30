@@ -16,20 +16,16 @@ module.exports = {
             type: 'float'
         },
 
-        //cost_per_coin: {    // in naira
-        //    type: 'float'
-        //},
         amount_per_btc: {
             type: 'float'
+        },
+        
+        btc_address: {
+            type: 'string'
         },
 
         fees: {
             type: 'float'
-        },
-        
-        // must be removed!
-        payment: {
-            model: 'payment'
         },
         
         transaction: {
