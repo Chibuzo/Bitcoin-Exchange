@@ -26,6 +26,7 @@ module.exports = {
       var tnx_desc = "BTC purchase";
       var tnx_amt = param('prefered_amount') * param('btc_qty');
       NairaAccount.transaction('Debit', 'transfer', tnx_desc, tnx_amt, req.session.userId).then(function(ret) {
+          console.log(ret);
           if (ret.status == 'success') {
               User.find({ id: req.session.userId }).exec(function(err, user) {
                   if (err) return;

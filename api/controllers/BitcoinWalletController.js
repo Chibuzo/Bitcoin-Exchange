@@ -12,7 +12,7 @@ module.exports = {
                 sendMail.sendErrMsg(err);
             }
             var passhrase = foundUser.email + "." + foundUser.id;
-            Wallet.generateAddress(foundUser.mnemonic, foundUser.password, passhrase).then(function(addr) {
+            Wallet.generateAddress(foundUser.mnemonic, req.session.hash, passhrase).then(function(addr) {
                 AddressActions.saveNewAddress(addr, req.session.userId);
                 res.json(200, { status: 'success', address: addr });
             }).catch(function(err) {

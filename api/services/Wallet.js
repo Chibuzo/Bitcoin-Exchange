@@ -57,13 +57,12 @@ module.exports = {
                         available: balance.availableAmount,
                         totalAmount: balance.totalAmount
                     };
-                    //console.log(balance);
                     return resolve(Balance);
                 });
             });
         });
     },
-    
+
     generateAddress: function(encrypted_mnemonic, hashed_pswd, passphrase) {
         return new Promise(function(resolve, reject) {
             var hash = require('crypto').createHash('sha256');

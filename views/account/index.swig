@@ -58,12 +58,12 @@
 								<h3>NGN Account</h3><br>
 								<div>
 									Balance<br>
-									NGN {{ req.session.naira_balance }}
+									NGN {{ req.session.naira_balance | formatCurrency }}
 									<br><br>
 								</div>
 								<div>
 									Available<br>
-									NGN {{ req.session.naira_available }}
+									NGN {{ req.session.naira_available | formatCurrency }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
 								<a href="#withdrawalModal" data-toggle="modal" class="btn btn-info pull-right fetch-beneficiaries" style="margin-left: 8px">Withdraw</a>

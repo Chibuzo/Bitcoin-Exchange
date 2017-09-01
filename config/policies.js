@@ -39,7 +39,7 @@ module.exports.policies = {
   },
   
   NairaTransactionController: {
-		'*': 'isLoggedIn'
+		//'*': 'isLoggedIn'
   },
 
   BeneficiaryController: {
@@ -47,7 +47,7 @@ module.exports.policies = {
   },
   
   OfferController: {
-      '*': 'isLoggedIn'
+      //'*': 'isLoggedIn'
   },
   
   OrderController: {

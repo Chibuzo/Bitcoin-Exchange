@@ -230,10 +230,10 @@
 
         <div class="footer">
             <div class="pull-right">
-                Haha!
+
             </div>
             <div>
-                <strong>Copyright</strong> CPBits &copy;
+                <strong>Copyright</strong> CapitalX &copy;
             </div>
         </div>
 

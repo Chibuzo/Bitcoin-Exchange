@@ -6,7 +6,6 @@
  */
 var Emailaddresses = require('machinepack-emailaddresses');
 var Passwords = require('machinepack-passwords');
-//const formatCurrency = require('format-currency');
 
 module.exports = {  
     signup: function(req, res) {
@@ -48,6 +47,7 @@ module.exports = {
                         };
                         
                         req.session.hash = bcrypt.hashSync(req.param('password'), salt);
+                        req.session.save();
                         
                         User.create(data).exec(function(err, newUser) {
                             if (err) {
@@ -81,7 +81,7 @@ module.exports = {
                     // create bitcoin wallet
                     var passhrase = user.email + "." + user.id;
                     Wallet.createWallet(email, req.session.hash, passhrase).then(function(wallet) {
-                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic, level: 0 }).exec(function(err) {
+                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic, level: 1 }).exec(function(err) {
                             if (err) {
                                 console.log(err);
                             }
@@ -115,15 +115,18 @@ module.exports = {
                             var passhrase = foundUser.email + "." + foundUser.id;
                             const bcrypt = require('bcrypt-nodejs');
                             req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
+                            req.session.save();
                             Wallet.getBalance(foundUser.mnemonic, req.session.hash, passhrase).then(function(btc_balance) {
                                 req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
                                 req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
+                                req.session.save();
                             })
                             .catch(function(err) {
                                 console.log(err);
                             });
                             req.session.naira_balance = balance.total;
                             req.session.naira_available = balance.available;
+                            req.session.save();
                         }).catch(function(err) {
                             console.log(err);
                         });
@@ -132,7 +135,6 @@ module.exports = {
                         req.session.level = foundUser.level.level;
                         req.session.amt_limit = foundUser.level.naira_access;
                         req.session.admin = foundUser.admin;
-                        req.session.save();
                         var user_type = foundUser.admin ? 'admin' : 'user';
                         return res.json(200, { status: 'Ok', user_type: user_type });
                     } else if (foundUser.status == 'Inactive') {
@@ -164,44 +166,34 @@ module.exports = {
               ]
             }).sort('createdAt DESC').populate('receiver').limit(10).exec(function(err, tnx) {
                 if (err) {}
-                //const converter = require('parallelfx');
-                //converter.getParallelRate({ from: 'USD', to: 'NGN' }).then(function(resp) {
-                //    var HTTP = require('machinepack-http');
-                //    HTTP.get({
-                //          url: '/market-price',
-                //          baseUrl: 'api.blockchain.info/charts',
-                //          data: { timespan: '1week', rollingAverage: '8hours', format: 'json' }
-                //    }).exec({
-                //          error: function(err) {
-                //            console.log(err);
-                //          },
-                //          requestFailed: function (err) {
-                //            console.log(err);
-                //          },
-                //          success: function(data) {
-                //              return res.view('user/dashboard', {
-                //                  me: {
-                //                      id: user.id,
-                //                      fname: user.fullname,
-                //                      email: user.email,
-                //                      btc_balance: req.session.coinAvailableBalance
-                //                  },
-                //                  
-                //                  market_price: data, trnx: tnx, xrate: resp
-                //              });
-                //          }
-                //    });
-                //});
-                return res.view('user/dashboard', {
+                const converter = require('parallelfx');
+                converter.getParallelRate({ from: 'USD', to: 'NGN' }).then(function(resp) {
+                    var HTTP = require('machinepack-http');
+                    HTTP.get({
+                          url: '/market-price',
+                          baseUrl: 'api.blockchain.info/charts',
+                          data: { timespan: '1week', rollingAverage: '8hours', format: 'json' }
+                    }).exec({
+                          error: function(err) {
+                            console.log(err);
+                          },
+                          requestFailed: function (err) {
+                            console.log(err);
+                          },
+                          success: function(data) {
+                              return res.view('user/dashboard', {
                                   me: {
                                       id: user.id,
                                       fname: user.fullname,
                                       email: user.email,
                                       btc_balance: req.session.coinAvailableBalance
                                   },
-                                  
-                                  market_price: '', trnx: tnx, xrate: ''
+
+                                  market_price: data, trnx: tnx, xrate: resp
                               });
+                          }
+                    });
+                });
             });
         });
     },

@@ -96,12 +96,12 @@
 {% include '../bitcoin/receive-modal.swig' %}
 {% include '../trade/instant-buy-modal.swig' %}
 
-<script src="/js/plugins/qrcode.min.js"></script>
-<script type="text/javascript" src="/js/plugins/numeral.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/plugins/qrcode.min.js"></script>
+<script type="text/javascript" src="/js/plugins/numeral.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
 $(document).ready(function() {  
     $("#getBTC-address").click(function(e) {
@@ -129,11 +129,10 @@ $(document).ready(function() {
     var market_price = {{ market_price | json | safe }};
     var xrate = {{ xrate | json | safe }};
     var chart_data = [];
-    //market_price.values.forEach(function(data) {
-    //  var ngn = (data.y * xrate);
-    //  chart_data.push([(data.x * 1000), ngn]);
-    //});
-    console.log(chart_data);
+    market_price.values.forEach(function(data) {
+      var ngn = (data.y * xrate);
+      chart_data.push([(data.x * 1000), ngn]);
+    });
     Highcharts.chart('chart-canvass', {
       title: {
             text: null
@@ -173,6 +172,11 @@ $(document).ready(function() {
       width : 170,
       height : 170
     });
+
+    function makeCode () {
+        var address = $("#btc-address").text();
+        qrcode.makeCode(address);
+    }
     
     
     // instant buy
@@ -205,11 +209,6 @@ function calculateCost() {
     }
     $("#btc-to-buy").val(Number(btc_qty).toFixed(9));
     $("#required_amt").val(numeral(req_ngn).format('0,00'));
-}
-
-function makeCode () {
-	var address = $("#btc-address").text();
-	qrcode.makeCode(address);
 }
 </script>
 {%  endblock %}

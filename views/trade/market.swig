@@ -79,7 +79,7 @@
 					</div>
 				{% for offer in offer_spread %}
 					<div class="row offer-row">
-						<div class="col-md-6 offer-ng-amt">{{ offer.amount_per_btc }}</div>
+						<div class="col-md-6 offer-ng-amt">{{ offer.amount_per_btc | formatCurrency }}</div>
 						<div class="col-md-6 text-right offer-btc-qty">{{ offer.btc_qty }}</div>
 					</div>
 				{% endfor %}	
@@ -93,7 +93,7 @@
 				</div>
 				{% for order in order_spread %}
 					<div class="row order-row">
-						<div class="col-md-6 order-ng-amt">{{ order.amount_per_btc }}</div>
+						<div class="col-md-6 order-ng-amt">{{ order.amount_per_btc | formatCurrency }}</div>
 						<div class="col-md-6 text-right order-btc-qty">{{ order.btc_amount }}</div>
 					</div>
 				{% endfor %}	
@@ -136,7 +136,7 @@
 							<input type="hidden" name="trade_opt" id="trade-opt" value="Buy" />
 							<input type="hidden" id="sell-fees" value="{{ sails.fees.sell_btc }}" />
 							<input type="hidden" id="buy-fees" value="{{ sails.fees.order_btc }}" />
-							<input type="hidden" id="ngn-balance" value="{{ req.session.naira_available }}" />
+							<input type="hidden" id="ngn-balance" value="{{ req.session.naira_available | formatCurrency }}" />
 							<input type="hidden" id="btc-balance" value="{{ req.session.coinAvailableBalance }}" />
 						</form>
 						<table class="buy">
@@ -165,7 +165,7 @@
 							<tr>
 								<td>Available balance:</td>
 								<td>BTC</td>
-								<td id="btc-balance" class="text-right">{{ req.session.coinAvailableBalance }}</td>
+								<td id="btc-balance" class="text-right">{{ req.session.coinAvailableBalance | formatCurrency }}</td>
 							</tr>
 							<tr>
 								<td>Sales total:</td>
@@ -211,7 +211,7 @@
 											<td>BTC Order</td>
 											<td class="text-right">{{ order.btc_amount }}</td>
 											<td class="text-right">{{ order.amount_per_btc }}</td>
-											<td class="text-right">{{ amount }}</td>
+											<td class="text-right">{{ amount | formatCurrency }}</td>
 											<td class="text-right">{{ order.fees }}</td>
 											<td class="text-center">{{ order.createdAt | date('d-m-Y') }}</td>
 											<td class="text-center"><a href="" class="cancel-order"><i class="fa fa-times fa-lg"></i></a></td>
@@ -224,7 +224,7 @@
 										<td>BTC Offer</td>
 										<td class="text-right">{{ offer.btc_qty }}</td>
 										<td class="text-right">{{ offer.amount_per_btc }}</td>
-										<td class="text-right">{{ amount }}</td>
+										<td class="text-right">{{ amount | formatCurrency }}</td>
 										<td class="text-right">{{ offer.fees }}</td>
 										<td class="text-center">{{ offer.createdAt | date('d-m-Y') }}</td>
 										<td class="text-center"><a href="" class="cancel-offer"><i class="fa fa-times fa-lg"></i></a></td>
@@ -315,7 +315,7 @@ $("#form-trade").submit(function(e) {
 	}
 	$.post(path, $(this).serialize(), function(d) {
 		if (d.status.trim() == 'success') {
-			location.reload(true);
+			//location.reload(true);
 		} else {
 			alert("Error");
 		}
@@ -421,7 +421,7 @@ function calculateTrade() {
 		buying_fees = (buying_fees * btc).toFixed(8);
 		$(".buy").find("#est-btc").text(buying_fees);
 		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
-		$(".buy").find("#ng-balance").text(naira_balance);
+		$(".buy").find("#ng-balance").text(numeral(naira_balance).format('0,0.00'));
 		// manipulate submit button
 		if (ngn < naira_balance) {
 			$("#order-btn").prop("disabled", false);

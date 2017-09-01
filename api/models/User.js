@@ -58,7 +58,7 @@ module.exports = {
         // add reference to transactions
         transactions: {
             collection: 'nairatransaction',
-            via: 'user'
+            via: 'user_id'
         },
 
         bitcointransactions: {
