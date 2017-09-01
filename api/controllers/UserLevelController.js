@@ -92,14 +92,7 @@ module.exports = {
     },
     
     verifyPhoneCode: function(req, res) {
-        var code = req.param('verification_code');
-        if (code == req.session.phone_code) {
-            User.update({ id: req.session.userId }, { phone: req.session.phone, level: 2 }).populate('level').exec(function(err, user) {
-                req.session.phone_code = req.session.phone = null;
-                req.session.level = user.level.level;
-                return res.json(200, { status: 'success' });
-            });
-        }
+
     }
 };
 

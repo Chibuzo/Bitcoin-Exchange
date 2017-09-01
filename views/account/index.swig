@@ -41,12 +41,12 @@
 								<h3>BTC Account</h3><br>
 								<div>
 									Balance<br>
-									BTC {{ req.session.coinTotalAmount }}
+									BTC {{ btc_balance.total_bal }}
 									<br><br>
 								</div>
 								<div>
 									Available<br>
-									BTC {{ req.session.coinAvailableBalance }}
+									BTC {{ btc_balance.available_bal }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
 								<a href="/transaction/btc" class="btn btn-primary pull-right">View Account</a>
@@ -58,12 +58,12 @@
 								<h3>NGN Account</h3><br>
 								<div>
 									Balance<br>
-									NGN {{ req.session.naira_balance }}
+									NGN {{ naira_balance.total }}
 									<br><br>
 								</div>
 								<div>
 									Available<br>
-									NGN {{ req.session.naira_available }}
+									NGN {{ naira_balance.available }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
 								<a href="#withdrawalModal" data-toggle="modal" class="btn btn-info pull-right fetch-beneficiaries" style="margin-left: 8px">Withdraw</a>
@@ -132,10 +132,8 @@ $("#form-fund-account").submit(function(e) {
   
   if ($("#amount").val() > amt_limit) { 
       $(".alert-danger")
-          .html("Deposit amount can not exceed the allowed amount for your current <strong>User Level\'s</strong> which is: <strong>&#8358;" + numeral(amt_limit).format('0,00') + "</strong>")
-          .removeClass("hidden").show().fadeOut(13000, function() {
-          $(this).addClass('hidden');
-      });
+          .html("Deposit amount can not exceed the allowed amount for your current <strong>User Level\'s</strong> which is: <strong>&#8358;" + numeral(amt_limit).format('0,00') + "</strong><p>To increase your deposit amount, go to <a href='/user/settings'>settings</a></p>")
+          .removeClass("hidden").show();
       return false;
   }
   

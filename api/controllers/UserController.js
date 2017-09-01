@@ -109,24 +109,6 @@ module.exports = {
                 },
                 success: function () {
                     if (foundUser.status == 'Active') {
-                        // fetch Naira account balance
-                        NairaAccount.getBalance(foundUser.id).then(function(balance) {
-                            // fetch BTC account balances
-                            var passhrase = foundUser.email + "." + foundUser.id;
-                            const bcrypt = require('bcrypt-nodejs');
-                            req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
-                            Wallet.getBalance(foundUser.mnemonic, req.session.hash, passhrase).then(function(btc_balance) {
-                                req.session.coinAvailableBalance = btc_balance.available / 100000000;     // converting Satoshi to BTC
-                                req.session.coinTotalAmount = btc_balance.totalAmount / 100000000;
-                            })
-                            .catch(function(err) {
-                                console.log(err);
-                            });
-                            req.session.naira_balance = balance.total;
-                            req.session.naira_available = balance.available;
-                        }).catch(function(err) {
-                            console.log(err);
-                        });
                         req.session.userId = foundUser.id;
                         req.session.fname = foundUser.fullname;
                         req.session.level = foundUser.level.level;
@@ -186,7 +168,7 @@ module.exports = {
                 //                      email: user.email,
                 //                      btc_balance: req.session.coinAvailableBalance
                 //                  },
-                //                  
+                //
                 //                  market_price: data, trnx: tnx, xrate: resp
                 //              });
                 //          }
@@ -199,7 +181,7 @@ module.exports = {
                                       email: user.email,
                                       btc_balance: req.session.coinAvailableBalance
                                   },
-                                  
+
                                   market_price: '', trnx: tnx, xrate: ''
                               });
             });

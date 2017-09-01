@@ -324,21 +324,25 @@ $(document).ready(function() {
   // submit phone number
   $("#form-phone-verification").submit(function(e) {
       e.preventDefault();
+	  var $this = $(this);
+	  $this.find("button[type='submit']").prop('disabled', true);
       if ($("#opt").val() == "add-phone") {
           $.post('/userlevel/addphone', $(this).serialize(), function(d) {
               if (d.status.trim()  == 'success') {
                   $("#div-phone").addClass('hidden');
                   $("#div-phone-code").removeClass('hidden');
                   $("#opt").val('verify-code');
-              }
+				  $this.find("button[type='submit']").prop('disabled', false);
+			  }
           }, 'JSON');
       } else if ($("#opt").val() == "verify-code") {
           $.post('/userlevel/verify-code', $(this).serialize(), function(d) {
               if (d.status.trim() == 'success') {
                   location.reload();
               } else {
-                  $("#alert").addClass("alert-danger").text("We couldn't verify your phone number. Make sure your entered the code correctly");                
-              }
+                  $("#alert").addClass("alert-danger").text("We couldn't verify your phone number. Make sure your entered the code correctly");
+				  $this.find("button[type='submit']").prop('disabled', false);
+			  }
           }, 'JSON');
       }
   });
