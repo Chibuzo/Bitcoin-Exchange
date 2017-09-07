@@ -17,21 +17,19 @@ module.exports = {
       }
 		
       // let's check if this order is eligible
-      if ((param('btc_qty') * param('prefered_amount')) < req.session.naira_available) {
+      if ((param('btc_qty') * param('prefered_amount')) > req.session.naira_available) {
         sendMail.sendErrMsg('Attempted hacking (Trading)', req.session.stringify);
-        return res.json(200, { status: 'success' });
+        return res.json(200, { status: 'error', msg: 'Invalid Order' });
       }
-          
       // lock the required amount required for this order
       var tnx_desc = "BTC purchase";
       var tnx_amt = param('prefered_amount') * param('btc_qty');
-      NairaAccount.transaction('Debit', 'transfer', tnx_desc, tnx_amt, req.session.userId).then(function(ret) {
-          console.log(ret);
+      NairaAccount.transaction('Debit', 'transfer', tnx_desc, tnx_amt, req.session.userId, 'Pending').then(function(ret) {
           if (ret.status == 'success') {
-              User.find({ id: req.session.userId }).exec(function(err, user) {
+              User.findOne({ id: req.session.userId }).exec(function(err, user) {
                   if (err) return;
-                  var passhrase = user.email + "." + user.id;
-                  Wallet.generateAddress(user.mnemonic, req.session.hash, passhrase).then(function(addr) {
+                  var passphrase = user.email + "." + user.id;
+                  Wallet.generateAddress(user.mnemonic, req.session.hash, passphrase).then(function(addr) {
                       var data = {
                           owner: req.session.userId,
                           btc_amount: param('btc_qty'),
@@ -54,6 +52,8 @@ module.exports = {
           } else {
               sendMail.sendErrMsg('Could lock down payment for btc order');
           }
+      }).catch(function(err) {
+          console.log(err);
       });
       return res.json(200, { status: 'success' });
   },

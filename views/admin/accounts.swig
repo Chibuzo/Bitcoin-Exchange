@@ -41,12 +41,12 @@
 								<h3>BTC Account</h3><br>
 								<div>
 									Balance<br>
-									BTC {{ req.session.coinTotalAmount }}
+									BTC {{ req.session.coinTotalAmount | toFixed }}
 									<br><br>
 								</div>
 								<div>
 									Available<br>
-									BTC {{ req.session.coinAvailableBalance }}
+									BTC {{ req.session.coinAvailableBalance | toFixed }}
 								</div>
 								<br><hr style="margin-bottom: 8px;">
 								<a href="/admin/btc-transactions" class="btn btn-primary pull-right">View Account</a>

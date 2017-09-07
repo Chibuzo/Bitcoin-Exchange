@@ -8,7 +8,7 @@ var converter = require('parallelfx');
 
 module.exports = {
 	index: function(req, res) {
-      //Offer.destroy({}).exec(function() {});
+      	//Offer.destroy({}).exec(function() {});
 		//Order.destroy({}).exec(function() {});
 		//NairaTransaction.destroy({}).exec(function() {});
 		Offer.find({ owner: req.session.userId, status: 'Open' }).exec(function(err, offers) {

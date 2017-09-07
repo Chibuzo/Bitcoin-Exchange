@@ -22,13 +22,13 @@ module.exports = {
                     receiver = result.user_id;
                 }                    
 				var q = req.param;
-				var passhrase = foundUser.email + "." + foundUser.id;
-				Wallet.sendBTC(foundUser.mnemonic, foundUser.password, passhrase, q('btc_address'), q('btc_amount'), q('description')).then(function(resp) {
+				var passphrase = foundUser.email + "." + foundUser.id;
+				Wallet.sendBTC(foundUser.mnemonic, req.session.hash, passphrase, q('btc_address'), q('btc_amount'), q('description')).then(function(resp) {
 					AddressActions.saveBTCTransaction(q('btc_address'), q('btc_amount'), req.session.userId, receiver, resp.fee, q('description'), resp.txid, 'message', 'Done');
 					return res.json(200, { status: 'success' });
 				})
 				.catch(function(err) {
-					console.log(err);
+					return res.json(200, { status: 'error', msg: err });
 				});
                 /*} else {
 
@@ -44,7 +44,7 @@ module.exports = {
             { sender: req.session.userId },
             { receiver: req.session.userId }
           ]
-        }).sort('createdAt DESC').populate('receiver').exec(function(err, tnx) {
+        }).sort({tnx_date: 'DESC'}).populate('receiver').exec(function(err, tnx) {
             if (err) console.log(err);
             res.view('bitcoin/transactions', { trnx: tnx });
         });

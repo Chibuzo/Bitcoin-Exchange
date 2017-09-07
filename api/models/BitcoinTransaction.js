@@ -33,11 +33,16 @@ module.exports = {
         },
 
         tnx_id: {
-            type: 'string'
+            type: 'string',
+            unique: 'true'
         },
 
         tnx_hash: {
             type: 'string'
+        },
+
+        tnx_date: {
+            type: 'datetime'
         },
 
         notice: {

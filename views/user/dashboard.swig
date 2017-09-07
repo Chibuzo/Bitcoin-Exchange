@@ -121,6 +121,9 @@ $(document).ready(function() {
       $.post('/wallet/send', $(this).serialize(), function(d) {
         if (d.status.trim() == 'success') {
           location.replace('/transaction/btc');
+        } else if (d.status.trim() == 'error') {
+            $("#form-send-coin .alert-error").html(d.msg).removeClass('hidden');
+            $("#btc-send-btn").html("<i class='fa fa-btc'></i> &nbsp;Send BTC").prop("disabled", false);
         }
       }, 'JSON');
     });

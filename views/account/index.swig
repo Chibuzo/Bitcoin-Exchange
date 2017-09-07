@@ -103,8 +103,8 @@
 			</div><br>
 		{% endfor %}
 		<div>
-			<div class="alert alert-success">For bank transfer, use an account that bear the same name with the name you use on this site.</div>
-			<div class="alert alert-success">Also for bank deposit, use your name as depositor.</div>
+			<div class="alert alert-success">For bank transfer, use an account that bear the same name with the name you use on this site.<p>Also for bank deposit, use your name as depositor.</p></div>
+			{#<div class="alert alert-success"></div>#}
 		</div>
 	</div>
 </div>
@@ -147,8 +147,8 @@ $("#form-fund-account").submit(function(e) {
   }
 	var tnx_ref = generateUniqueRef(8);
 
-	$("#ph-amount").html('&#8358;' + $("#amount").val());
-	$("#ph-tnx-ref").text(tnx_ref);
+	$("#ph-amount").html('&#8358;' + numeral($("#amount").val()).format('0,0'));
+	$("#ph-tnx-ref").text(tnx_ref.toUpperCase());
 
 	$.post('/account/fundNairaAccount', $(this).serialize() + '&tnx_ref=' + tnx_ref, function(d) {
 		if (d.status.trim() == 'success') {

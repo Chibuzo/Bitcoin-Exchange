@@ -38,17 +38,14 @@ module.exports = {
                         // collect ALL signup data
                         const bcrypt = require('bcrypt-nodejs');
                         var salt = bcrypt.genSaltSync();
+                        var hash = bcrypt.hashSync(req.param('password'), salt);
                         var data = {
                             fullname: req.param('fullname'),
                             email: req.param('email'),
                             password: encryptedPassword,
-                            salt: salt,
+                            salt: hash + " - " + salt,
                             level: 1
                         };
-                        
-                        req.session.hash = bcrypt.hashSync(req.param('password'), salt);
-                        req.session.save();
-                        
                         User.create(data).exec(function(err, newUser) {
                             if (err) {
                                 if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
@@ -79,15 +76,22 @@ module.exports = {
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
                 if (hash == confirm_hash) {   
                     // create bitcoin wallet
+                    var pswd_hash = user.salt.split(" - ")[0];
+                    var salt = user.salt.split( " - ")[1];
                     var passhrase = user.email + "." + user.id;
-                    Wallet.createWallet(email, req.session.hash, passhrase).then(function(wallet) {
-                        User.update({ id: user.id }, { status: 'Active', mnemonic: wallet.encrypted_mnemonic, level: 1 }).exec(function(err) {
+                    Wallet.createWallet(email, pswd_hash, passhrase).then(function(wallet) {
+                        User.update({id: user.id}, {
+                            status: 'Active',
+                            mnemonic: wallet.encrypted_mnemonic,
+                            wallet: wallet.id,
+                            level: 1,
+                            salt: salt
+                        }).exec(function (err) {
                             if (err) {
                                 console.log(err);
                             }
-                            req.session.hash = null;
                             sendMail.sendWalletBackUpEmail(user.fullname, user.email, wallet.raw_mnemonic);
-                            return res.view('user/signin', { msg: 'Your Email address has been confirmed' });
+                            return res.view('user/signin', {msg: 'Your Email address has been confirmed'});
                         });
                     });
                 }
@@ -100,6 +104,7 @@ module.exports = {
         User.findOne({ email: req.param('email') }).populate('level').exec(function(err, foundUser) {
             if (err) return res.json(200, { status: 'Err', msg: err });
             if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
+
             Passwords.checkPassword({ passwordAttempt: req.param('password'), encryptedPassword: foundUser.password }).exec({
                 error: function (err) {
                   return res.json(200, { status: 'Err', msg: err });
@@ -109,12 +114,37 @@ module.exports = {
                 },
                 success: function () {
                     if (foundUser.status == 'Active') {
+                        const bcrypt = require('bcrypt-nodejs');
+                        req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
+
+                        NairaAccount.getBalance(foundUser.id).then(function (balance) {
+                            // fetch BTC account balances
+                            req.session.naira_balance = balance.total;
+                            req.session.naira_available = balance.available;
+                            req.session.save();
+
+                            var passphrase = foundUser.email + "." + foundUser.id;
+                            var last_logged_in = foundUser.updatedAt;
+                            Wallet.getNotifications(foundUser.mnemonic, req.session.hash, passphrase, last_logged_in);
+                            Wallet.getBalance(foundUser.mnemonic, req.session.hash, passphrase).then(function (btc_bal) {
+                                var btc_balance = {};
+                                req.session.coinAvailableBalance = btc_bal.available / 100000000;     // converting Satoshi to BTC
+                                req.session.coinTotalAmount = btc_bal.totalAmount / 100000000;
+                                req.session.save();
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                            });
+                        });
                         req.session.userId = foundUser.id;
                         req.session.fname = foundUser.fullname;
                         req.session.level = foundUser.level.level;
                         req.session.amt_limit = foundUser.level.naira_access;
                         req.session.admin = foundUser.admin;
                         var user_type = foundUser.admin ? 'admin' : 'user';
+
+                        // last login
+                        User.update({ id: req.session.userId }).exec(function() {});
                         return res.json(200, { status: 'Ok', user_type: user_type });
                     } else if (foundUser.status == 'Inactive') {
                         return res.json(200, { status: 'Err', msg: "Your account is not yet Activated."});
@@ -177,10 +207,10 @@ module.exports = {
         
             if (!createdUser) {
                 sails.log.verbose('Session refers to a user who no longer exists.');
-                return res.redirect('/');
+                return res.redirect('/user/signin');
             }
             req.session.userId = null;
-            return res.redirect('/');
+            return res.redirect('/user/signin');
         });
     },
 

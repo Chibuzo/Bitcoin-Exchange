@@ -42,7 +42,7 @@
 								<tbody id="tb-transactions">
 								{% for tnx in trnx %}
 									<tr id="{{ tnx.id }}">
-										<td>{{ tnx.createdAt | date('d-m-Y H:i') }}</td>
+										<td>{{ tnx.tnx_date | date('d-m-Y H:i') }}</td>
 										<td>{{ tnx.user_id.fullname }}</td>
 										<td>{{ tnx.description }}</td>
 										<td>{{ tnx.tnx_type }}</td>

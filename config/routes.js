@@ -12,8 +12,14 @@ module.exports.routes = {
         view: 'user/signup'
     },
 
-    //'POST /user/signin': 'UserController.signin',
-    
+    'GET /termsofuse': {
+        view: 'misc/termsofuse'
+    },
+
+    'GET /privacy-policy': {
+        view: 'misc/privacy-policy'
+    },
+
     'GET /user/activate/:email/:hash': 'UserController.activateAccount',
 
     'GET /user/signout': 'UserController.signout',

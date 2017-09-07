@@ -10,15 +10,16 @@ module.exports = {
 					return reject('Error');
 				}
 				if (offer.length < 1) {
-					//console.log('No offer');
+					console.log('No matching offer');
 					return;
 				}
+				// let's check whether the available btc at this price can satisfy this order
 				if (offer[0].btc_qty >= btc_qty) {
 					module.exports.tradeByOrder(order_id, amount, btc_qty, addr, buyer_id);
 					return resolve('Done');
 				} else {
 					// instant buy
-					//console.log("Found no match");
+					console.log("Found no match");
 				}
 			});
 		});
@@ -36,18 +37,21 @@ module.exports = {
                           return cb('Done finally');
                         }
                         // transfer coin and money
-                        var msg = "Purchased from CapitalX market";
+                        var msg = "BTC Sales";
                         var qty_to_sell = offer.btc_qty > rem_btc ? rem_btc : offer.btc_qty;
-                        btc_sum = btc_sum.plus(qty_to_sell);
-                        rem_btc = rem_btc.minus(qty_to_sell);
-                        var passhrase = offer.owner.email + "." + offer.owner.id;
-                        Wallet.sendBTC(offer.owner.mnemonic, req.session.hash, passhrase, address, qty_to_sell, msg).then(function(resp) {
+                        var passphrase = offer.owner.email + "." + offer.owner.id;
+                      //console.log(rem_btc);
+                      //console.log(offer.btc_qty);
+                      //console.log('Qty to sell' + qty_to_sell);
+                        Wallet.sendBTC(offer.owner.mnemonic, offer.token, passphrase, address, qty_to_sell.toString(), msg).then(function(resp) {
+                            rem_btc = rem_btc.minus(qty_to_sell);
+                            btc_sum = btc_sum.plus(qty_to_sell);
                               // send notification
                               //console.log('Before Savng: ' + qty_to_sell);
-                              AddressActions.saveBTCTransaction(address, qty_to_sell, offer.owner.id, buyer_id, resp.fee, msg, resp.txid, 'Successful');
+                              AddressActions.saveBTCTransaction(address, qty_to_sell.toString(), offer.owner.id, buyer_id, resp.fee, msg, resp.txid, 'Successful');
                               if (resp.status == 'success') {
                                     // debit buyer
-                                    var tnx_desc = "Bitcoin purchase";
+                                    var tnx_desc = "Bitcoin sales";
                                     var amount = amt * qty_to_sell;
 
                                     NairaAccount.transaction('Credit', 'transfer', tnx_desc, amount, offer.owner.id);
@@ -84,6 +88,7 @@ module.exports = {
 				console.log(err);
 				return;
 			}
+            if (orders.length < 1) return console.log('No match');
 			var available_btc = new Big(btc_to_sell);
 			Offer.findOne({ id: offer_id }).populate('owner').exec(function(err, offer) {
 				if (err) {
@@ -93,11 +98,11 @@ module.exports = {
 				async.eachSeries(orders, function(order, cb) {
 					if (available_btc.gte(order.btc_amount)) {
                         var msg = "Sold at CapitalX market";
-                        var passhrase = offer.owner.email + "." + offer.owner.id;
-                        Wallet.sendBTC(offer.owner.mnemonic, offer.token, passhrase, order.address, order.btc_amount, msg).then(function(resp) {
+                        var passphrase = offer.owner.email + "." + offer.owner.id;
+                        Wallet.sendBTC(offer.owner.mnemonic, offer.token, passphrase, order.btc_address, order.btc_amount, msg).then(function(resp) {
                             // send notification
                             available_btc = available_btc.minus(order.btc_amount);
-                            AddressActions.saveBTCTransaction(order.address, order.btc_amount, offer.owner.id, order.owner.id, resp.fee, msg, resp.txid, 'Successful');
+                            AddressActions.saveBTCTransaction(order.btc_address, order.btc_amount, offer.owner.id, order.owner.id, resp.fee, msg, resp.txid, 'Successful');
                             if (resp.status == 'success') {
                                 // debit buyer
                                 var tnx_desc = "Bitcoin purchase";

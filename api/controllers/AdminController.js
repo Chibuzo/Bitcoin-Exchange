@@ -32,7 +32,7 @@ module.exports = {
     },
 
     getBTCTransactions: function(req, res) {
-        BitcoinTransaction.find().sort({ createdAt: 'desc' }).exec(function(err, tnx) {
+        BitcoinTransaction.find().sort({ tnx_date: 'desc' }).exec(function(err, tnx) {
             if (err) {
                 res.negotiate(err);
             }

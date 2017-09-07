@@ -22,8 +22,7 @@
         <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css"/>
         <link href="/vendor/swiper/swiper.min.css" rel="stylesheet" type="text/css"/>
         <link href="/vendor/cubeportfolio/css/cubeportfolio.min.css" rel="stylesheet" type="text/css"/>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />        
-
+        <link href="/styles/font-awesome.min.css" rel="stylesheet">
         <!-- Theme Styles -->
         <link href="/styles/front_style.css" rel="stylesheet" type="text/css"/>
         <link href="/styles/global.css" rel="stylesheet" type="text/css"/>
@@ -67,14 +66,23 @@
                             <ul class="nav navbar-nav">
                                 <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
                                 <li>
-                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/trade/">Market</a>
+                                    <a class="text-uppercase g-font-weight--400 g-color--red g-letter-spacing--2" href="/trade/">Market</a>
                                 </li>
-                                <li>
-                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/user/signin">Sign In</a>
-                                </li>
-                                <li>
-                                    <a class="text-uppercase g-font-weight--700 g-color--red g-letter-spacing--2" href="/user/signup">Sign Up</a>
-                                </li>
+                                {% if req.session.userId %}
+                                    <li>
+                                        <a class="text-uppercase g-font-weight--400 g-color--red g-letter-spacing--2" href="/user/dashboard">Dashboard</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-uppercase g-font-weight--400 g-color--red g-letter-spacing--2" href="/user/signout">Sign Out</a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="text-uppercase g-font-weight--400 g-color--red g-letter-spacing--2" href="/user/signin">Sign In</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-uppercase g-font-weight--400 g-color--red g-letter-spacing--2" href="/user/signup">Sign Up</a>
+                                    </li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
@@ -83,11 +91,16 @@
             <!-- End Navbar -->
         </header>
         <!--========== END HEADER ==========-->
-
-{% block body %}{% endblock %}
-
-</div>
-
+
+
+{% block body %}{% endblock %}
+
+
+
+</div>
+
+
+
 <!--========== FOOTER ==========-->
         <footer class="g-bg-color--dark">
             <!-- Links -->
@@ -97,8 +110,8 @@
                         <div class="col-sm-2 g-margin-b-20--xs g-margin-b-0--md">
                             <h5 class="g-color--white-opacity">Company</h5>
                             <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
-                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Home</a></li>
-                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">About</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="">Home</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="">About</a></li>
                                 <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Contact</a></li>
                             </ul>
                         </div>
@@ -106,9 +119,9 @@
                         <div class="col-sm-2 g-margin-b-40--xs g-margin-b-0--md">
                             <h5 class="g-color--white-opacity">Policies</h5>
                             <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
-                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Fees</a></li>
-                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Privacy Policy</a></li>
-                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Terms &amp; Conditions</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="#">Fees</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="/privacy-policy">Privacy Policy</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="/termsofuse">Terms &amp; Conditions</a></li>
                             </ul>
                         </div>
                         

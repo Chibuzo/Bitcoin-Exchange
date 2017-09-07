@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bitcoin Platform</title>
+    <title>CapitalX Admin</title>
 
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href="/styles/font-awesome.min.css" rel="stylesheet">
@@ -220,7 +220,7 @@
                 Haha!
             </div>
             <div>
-                <strong>Copyright</strong> CPBits &copy;
+                <strong>Copyright</strong> CapitalX &copy;
             </div>
         </div>
 

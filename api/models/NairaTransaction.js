@@ -32,7 +32,7 @@ module.exports = {
             type: 'string'
         },
 
-        user_id: {
+        user: {
             model: 'user'
         },
 

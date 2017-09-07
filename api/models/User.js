@@ -36,6 +36,11 @@ module.exports = {
             type: 'string'
         },
 
+        wallet_id: {
+            type: 'string',
+            unique: 'true'
+        },
+
         admin: {
             type: 'boolean'
         },
@@ -58,7 +63,7 @@ module.exports = {
         // add reference to transactions
         transactions: {
             collection: 'nairatransaction',
-            via: 'user_id'
+            via: 'user'
         },
 
         bitcointransactions: {

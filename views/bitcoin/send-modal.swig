@@ -36,6 +36,7 @@
 							</div>
 						</div>
 					</div>
+					<div class="alert alert-error hidden"></div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default close-modal" data-dismiss="modal">

@@ -8,12 +8,12 @@ var Promise = require('promise');
 module.exports = {
     getBalance: function (userId) {
         return new Promise(function(resolve, reject) {
-            NairaTransaction.find({ user_id: userId, tnx_type: 'Credit' }).exec(function (err, credit_tnx) {
+            NairaTransaction.find({ user: userId, tnx_type: 'Credit' }).exec(function (err, credit_tnx) {
                 if (err) {
                     console.log(err);
                     return reject(err);
                 }
-                NairaTransaction.find({ user_id: userId, tnx_type: 'Debit' }).exec(function (err, debit_tnx) {
+                NairaTransaction.find({ user: userId, tnx_type: 'Debit' }).exec(function (err, debit_tnx) {
                     if (err) {
                         console.log(err);
                         return reject(err);
@@ -43,10 +43,14 @@ module.exports = {
         });
     },
     
-    transaction: function(t_type, payment_opt, desc, amount, user_id, payee_name, status, type) {
+    transaction: function(t_type, payment_opt, desc, amount, user_id, payee_name, status, type, bank, acc_name, acc_no) {
         return new Promise(function(resolve, reject) {
-            status = status === undefined ? 'Confirmed' : status;
+            payee_name = payee_name === undefined ? '' : payee_name;
+            status = status === undefined ? 'confirmed' : status;
             type = type === undefined ? 'virtual' : type;
+            if (bank === undefined) {
+                bank = acc_name = acc_no = '';
+            }
             var data = {
                 tnx_type: t_type,
                 payment_opt: payment_opt,
@@ -54,6 +58,9 @@ module.exports = {
                 amount: amount,
                 user: user_id,
                 payee_name: payee_name,
+                bank: bank,
+                account_name: acc_name,
+                account_number: acc_no,
                 status: status,
                 type: type
             };
@@ -70,7 +77,7 @@ module.exports = {
     
     adminAccountBalance: function() {
         return new Promise(function(resolve, reject) {
-            NairaTransaction.find({ type: 'çashin' }).exec(function (err, credit_tnx) {
+            NairaTransaction.find({ type: 'cashin' }).exec(function (err, credit_tnx) {
                 if (err) {
                     console.log(err);
                     return reject(err);

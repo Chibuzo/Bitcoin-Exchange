@@ -8,7 +8,6 @@ var validator = require('validator');
 
 module.exports = {
 	makeOffer: function(req, res) {
-        console.log('HEre');
         var param = req.param;
         if (_.isUndefined(param('btc_qty')) || !validator.isDecimal(param('btc_qty'))) {
             return res.json(200, { status: 'error', msg: 'Bitcoin quantity must be in numbers' });
@@ -30,14 +29,12 @@ module.exports = {
             fees: sails.fees.sell_btc,
 			status: 'Open'
         };
-        console.log('Got here');
         Offer.create(data).exec(function(err, offer) {
             if (err) {
                 sendMail.sendErrMsg(err, data);
 				console.log(err);
                 return res.json(200, { status: 'error', msg: err });
             }
-            console.log('Created');
 			// try and match this offer
 			Trading.tradeByOffer(offer.id, param('btc_qty'), param('prefered_amount')); /*.then(function(resp) {
 				console.log(resp);

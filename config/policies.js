@@ -21,7 +21,7 @@ module.exports.policies = {
   },
   
   BitcoinTransactionController: {
-		'*': 'isLoggedIn'
+		//'*': 'isLoggedIn'
   },
 
   UserController: {
@@ -51,7 +51,7 @@ module.exports.policies = {
   },
   
   OrderController: {
-      '*': 'isLoggedIn'
+      //'*': 'isLoggedIn'
   },
 
   AdminController: {

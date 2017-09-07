@@ -16,7 +16,8 @@ module.exports = {
         }
     },
 
-    saveBTCTransaction: function(address, amount, sender, receiver, fee, desc, tnx_id, notice) {
+    saveBTCTransaction: function(address, amount, sender, receiver, fee, desc, tnx_id, notice, tnx_date) {
+        tnx_date = tnx_date === undefined ? new Date().toISOString() : tnx_date;
         var data = {
             address: address,
             btc: amount,
@@ -25,6 +26,7 @@ module.exports = {
             description: desc,
             fee: fee,
             tnx_id: tnx_id,
+            tnx_date: tnx_date,
             notice: notice
         };
         BitcoinTransaction.create(data).exec(function(err) {

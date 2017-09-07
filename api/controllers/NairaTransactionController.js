@@ -7,24 +7,13 @@
 
 module.exports = {
     fundNairaAccount: function (req, res) {
-        var data = {
-            'amount': req.param('amount'),
-            'tnx_type': req.param('tnx_type'),
-            'payment_opt': req.param('payment_opt'),
-            'account_name': req.param('account_name'),
-            'account_number': req.param('account_number'),
-            'bank': req.param('bank'),
-            'user_id': req.session.userId,
-            'description': req.param('desc'),
-            'status': 'Pending',
-            'type': 'cashin'
-        };
-
-        NairaTransaction.create(data).exec(function(err) {
-            if (err) {
-                return res.json(200, { status: 'Error', msg: 'Transaction failed', reason: err });
+        NairaAccount.transaction(req.param('tnx_type'), req.param('payment_opt'), req.param('desc'), req.param('amount'), req.session.userId, 'CapitalX', 'Pending', 'cashin', req.param('bank'), req.param('account_name'), req.param('account_number')).then(function(resp) {
+            if (resp.status == 'success') {
+                return res.json(200, { status: 'success' });
             }
-            return res.json(200, { status: 'success' });
+        })
+        .catch(function(err) {
+            return res.json(200, { status: 'error', msg: 'Transaction failed', reason: err });
         });
     },
     

@@ -98,6 +98,7 @@ module.exports = {
             User.update({ id: req.session.userId }, { level: 2, phone: req.session.phone }).exec(function(err, user) {
                 req.session.level = 2;
                 req.session.amt_limit = 200000;
+                req.session.save();
             });
             return res.json(200, { status: 'success' });
         } else {

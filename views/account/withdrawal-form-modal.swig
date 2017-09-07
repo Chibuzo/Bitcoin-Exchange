@@ -34,7 +34,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default close-modal" data-dismiss="modal">
-						Cancel
+						Close
 					</button>
 					<button type="submit" class="btn btn-primary" id="submit-btn">
 						Send Request

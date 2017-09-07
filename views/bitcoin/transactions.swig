@@ -38,14 +38,14 @@
 								</ul>
 							</div>
 						</div>
-						<div class="ibox-content">
-							<table class="table table-hover">
+						<div class="ibox-content table-responsive">
+							<table class="table table-hover table-striped">
 								<thead>
 									<tr>
 										<th>Date</th>
-										<th>Receiver</th>
 										<th>Address</th>
 										<th>Description</th>
+										<th>Transaction Hash</th>
 										<th class="text-right">BTC</th>
 										<th class="text-right">Fee</th>
 										<th>Status</th>
@@ -53,19 +53,19 @@
 								</thead>
 								<tbody id="tb-transactions">
 								{% for tnx in trnx %}
-									{% if tnx.receiver.fullname == req.session.fname %}
-										{% set receiver = "Me" %}
-										{% set tr = "warning" %}
-									{% else %}
-										{% set receiver = tnx.receiver.fullname %}
-										{% set tr = "" %}
-									{% endif %}
+									{#{% if tnx.receiver.fullname == req.session.fname %}#}
+										{#{% set receiver = "Me" %}#}
+										{#{% set tr = "warning" %}#}
+									{#{% else %}#}
+										{#{% set receiver = tnx.receiver.fullname %}#}
+										{#{% set tr = "" %}#}
+									{#{% endif %}#}
 									
 									<tr id="{{ tnx.id }}" class="{{ tr }}">
-										<td>{{ tnx.createdAt | date('D, d-m-Y') }}</td>
-										<td>{{ receiver }}</td>
+										<td>{{ tnx.tnx_date | date('d/m/Y') }}</td>
 										<td>{{ tnx.address }}</td>
 										<td>{{ tnx.description }}</td>
+										<td>{{ tnx.tnx_id }}</td>
 										<td class="text-right">{{ tnx.btc }}</td>
 										<td class="text-right">{{ tnx.fee / 100000000 }}</td>
 										<td>{{ tnx.notice }}</td>

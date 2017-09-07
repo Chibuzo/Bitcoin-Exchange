@@ -71,7 +71,7 @@
 <div class="container-fluid">
 	<div class="row" style="margin-top: 100px !important;">
 		<div class="col-md-2">
-			<div class="trade-header">Available Offer</div>
+			<div class="trade-header">Available <Offers></Offers></div>
 			<div class="inner-div" id="offers">
 				<div class="row">
 						<div class="col-md-6"><strong>NGN Price</strong></div>
@@ -79,8 +79,8 @@
 					</div>
 				{% for offer in offer_spread %}
 					<div class="row offer-row">
-						<div class="col-md-6 offer-ng-amt">{{ offer.amount_per_btc | formatCurrency }}</div>
-						<div class="col-md-6 text-right offer-btc-qty">{{ offer.btc_qty }}</div>
+						<div class="col-md-6 col-sm-6 col-xs-6 offer-ng-amt">{{ offer.amount_per_btc | formatCurrency }}</div>
+						<div class="col-md-6 col-sm-6 col-xs-6 text-right offer-btc-qty">{{ offer.btc_qty | toFixed }}</div>
 					</div>
 				{% endfor %}	
 			</div>
@@ -93,8 +93,8 @@
 				</div>
 				{% for order in order_spread %}
 					<div class="row order-row">
-						<div class="col-md-6 order-ng-amt">{{ order.amount_per_btc | formatCurrency }}</div>
-						<div class="col-md-6 text-right order-btc-qty">{{ order.btc_amount }}</div>
+						<div class="col-md-6 col-sm-6 col-xs-6 order-ng-amt">{{ order.amount_per_btc | formatCurrency }}</div>
+						<div class="col-md-6 col-sm-6 col-xs-6 text-right order-btc-qty">{{ order.btc_amount | toFixed }}</div>
 					</div>
 				{% endfor %}	
 			</div>
@@ -123,21 +123,21 @@
 							<div class="form-group">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-btc"></i> </span>
-									<input type="number" name="btc_qty" id="btc_qty" class="form-control" placeholder="BTC Amount to buy" data-toggle="tooltip" title="Enter the amount of bitcoin you want to buy" data-container="body" data-placement="right" required />
+									<input type="number" name="btc_qty" id="btc_qty" class="form-control" placeholder="BTC Amount to buy" data-toggle="tooltip" title="BTC Quantity" data-container="body" data-placement="right" required />
 								</div>
 							</div>
 
 							<div class="form-group">
 								<div class="input-group">
 									<span class="input-group-addon">&#8358;</span>
-									<input type="number" name="prefered_amount" id="prefered_amount" class="form-control" placeholder="Naira price per bitcoin" data-toggle="tooltip" title="Enter amount at which you want to buy bitcoin" data-container="body" data-placement="right" required />
+									<input type="number" name="prefered_amount" id="prefered_amount" class="form-control" placeholder="Naira price per bitcoin" data-toggle="tooltip" title="Naira cost per BTC" data-container="body" data-placement="right" required />
 								</div>
 							</div>
 							<input type="hidden" name="trade_opt" id="trade-opt" value="Buy" />
-							<input type="hidden" id="sell-fees" value="{{ sails.fees.sell_btc }}" />
-							<input type="hidden" id="buy-fees" value="{{ sails.fees.order_btc }}" />
+							<input type="hidden" id="sell-fees" value="{{ sails.fees.sell_btc | toFixed }}" />
+							<input type="hidden" id="buy-fees" value="{{ sails.fees.order_btc | toFixed }}" />
 							<input type="hidden" id="ngn-balance" value="{{ req.session.naira_available | formatCurrency }}" />
-							<input type="hidden" id="btc-balance" value="{{ req.session.coinAvailableBalance }}" />
+							<input type="hidden" id="btc-balance" value="{{ req.session.coinAvailableBalance | toFixed }}" />
 						</form>
 						<table class="buy">
 							<tr>
@@ -148,7 +148,7 @@
 							<tr>
 								<td>Available balance:</td>
 								<td>NGN</td>
-								<td id="ng_balance" class="text-right">{{ req.session.naira_available }}</td>
+								<td id="ng_balance" class="text-right">{{ req.session.naira_available | formatCurrency }}</td>
 							</tr>
 							<tr>
 								<td>Estimated fees:</td>
@@ -191,7 +191,7 @@
 						<div class="pull-right">Open</div>
 					</div>
 					<div class="inner-div" style="overflow-x: auto">
-						<table class="tbl-order">
+						<table class="tbl-order table-striped">
 							<thead>
 								<tr>
 									<th>Description</th>
@@ -210,8 +210,8 @@
 										<tr id="{{ order.id }}">
 											<td>BTC Order</td>
 											<td class="text-right">{{ order.btc_amount }}</td>
-											<td class="text-right">{{ order.amount_per_btc }}</td>
-											<td class="text-right">{{ amount | formatCurrency }}</td>
+											<td class="text-right">&#8358;{{ order.amount_per_btc | formatCurrency }}</td>
+											<td class="text-right">&#8358;{{ amount | formatCurrency }}</td>
 											<td class="text-right">{{ order.fees }}</td>
 											<td class="text-center">{{ order.createdAt | date('d-m-Y') }}</td>
 											<td class="text-center"><a href="" class="cancel-order"><i class="fa fa-times fa-lg"></i></a></td>
@@ -223,8 +223,8 @@
 									<tr id="{{ offer.id }}">
 										<td>BTC Offer</td>
 										<td class="text-right">{{ offer.btc_qty }}</td>
-										<td class="text-right">{{ offer.amount_per_btc }}</td>
-										<td class="text-right">{{ amount | formatCurrency }}</td>
+										<td class="text-right">&#8358;{{ offer.amount_per_btc | formatCurrency }}</td>
+										<td class="text-right">&#8358;{{ amount | formatCurrency }}</td>
 										<td class="text-right">{{ offer.fees }}</td>
 										<td class="text-center">{{ offer.createdAt | date('d-m-Y') }}</td>
 										<td class="text-center"><a href="" class="cancel-offer"><i class="fa fa-times fa-lg"></i></a></td>
@@ -248,9 +248,9 @@
 				</div>
 				{% for trade in trades %}
 					<div class="row">
-						<div class="col-md-2">{{ trade.updatedAt | date('H:i') }}</div>
-						<div class="col-md-5 order-ng-amt text-right">{{ trade.amount_per_btc }}</div>
-						<div class="col-md-5 text-right order-btc-qty">{{ trade.btc_amount }}</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">{{ trade.updatedAt | date('H:i') }}</div>
+						<div class="col-md-5 col-sm-5 col-xs-5 order-ng-amt text-right">{{ trade.amount_per_btc | formatCurrency }}</div>
+						<div class="col-md-5 col-sm-5 col-xs-5 text-right order-btc-qty">{{ trade.btc_amount | toFixed }}</div>
 					</div>
 				{% endfor %}	
 			</div>
@@ -315,7 +315,7 @@ $("#form-trade").submit(function(e) {
 	}
 	$.post(path, $(this).serialize(), function(d) {
 		if (d.status.trim() == 'success') {
-			//location.reload(true);
+			location.reload(true);
 		} else {
 			alert("Error");
 		}
@@ -371,7 +371,6 @@ market_price.values.forEach(function(data) {
 	var ngn = (data.y * xrate);
 	chart_data.push([(data.x * 1000), ngn]);
 });
-console.log(chart_data);
 Highcharts.chart('chart-canvass', {
 	title: {
         text: null
@@ -418,18 +417,18 @@ function calculateTrade() {
 	var trade_opt = $("#trade-opt").val();
 //console.log(naira_balance);
 	if (trade_opt == 'Buy') {
-		buying_fees = (buying_fees * btc).toFixed(8);
+		buying_fees = (buying_fees * btc).toFixed(6);
 		$(".buy").find("#est-btc").text(buying_fees);
 		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
 		$(".buy").find("#ng-balance").text(numeral(naira_balance).format('0,0.00'));
 		// manipulate submit button
-		if (ngn < naira_balance) {
+		if ((ngn * btc) < naira_balance) {
 			$("#order-btn").prop("disabled", false);
 		} else {
 			$("#order-btn").prop("disabled", true);
 		}
 	} else if (trade_opt == 'Sell') {
-		selling_fees = (selling_fees * btc).toFixed(8);
+		selling_fees = (selling_fees * btc).toFixed(6);
 		$(".sell").find("#est-btc").text(selling_fees);
 		$(".sell").find("#btc-required").text(btc);
 		$(".sell").find("#btc-balance").text(btc_balance);
