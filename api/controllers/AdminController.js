@@ -40,10 +40,27 @@ module.exports = {
         });
     },
 
+    //getInstantTrade: function(req, res) {
+    //    InstantTrade.find().populate('user').exec(function(err, trade) {
+    //        if (err) return console.log(err);
+    //        return res.view('admin/instant-trade', { trades: trade });
+    //    });
+    //},
+
     getUsers: function(req, res) {
         User.find().sort({ createdAt: 'desc' }).exec(function(err, users) {
             return res.view('admin/users', {'users': users});
         });
+    },
+
+    getUserPage: function(req, res) {
+        var user_id = req.param('id');
+        User.findOne({ id: user_id })
+            .populate('level').populate('transactions').populate('bitcointransactions').populate('orders').populate('offers')
+            .exec(function(err, user) {
+                if (err) { return; }
+                return res.view('misc/index', { 'user': user });
+            });
     },
 
     settings: function(req, res) {

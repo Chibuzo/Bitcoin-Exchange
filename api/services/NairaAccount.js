@@ -110,5 +110,9 @@ module.exports = {
                 });
             });
         });
+    },
+
+    confirmTransaction: function(tnx_id) {
+        NairaTransaction.update({ id: tnx_id }, { status: 'confirmed' }).exec(function() {});
     }
 }

@@ -61,12 +61,12 @@ module.exports = {
         var phone = req.param('phone');
         // validate phone
         if (phone.charAt(0) == '0') {
-          phone = '234' + phone.substr(1);
+            phone = '234' + phone.substr(1);
         } else if (phone.length > 13 || phone.length == 14) {
-          phone = '234' + phone.substr(4);
+            phone = '234' + phone.substr(4);
         }
         if (phone.length < 13) {
-          return res.json(200, { status: 'Error', msg: 'Invalid phone number' });
+            return res.json(200, { status: 'Error', msg: 'Invalid phone number' });
         }
         req.session.phone = phone;
         // proceed
@@ -75,19 +75,19 @@ module.exports = {
         var msg = req.session.phone_code + " is your CapitalX verification code";
         var HTTP = require('machinepack-http');
         HTTP.get({
-          url: '/tools/geturl/Sms.php',
-          baseUrl: 'http://www.multitexter.com',
-          data: { username: 'farmhubb@gmail.com', password: '61761cezeilo', sender: 'CapitalX', message: msg, flash: 1, recipients: phone }
+            url: '/tools/geturl/Sms.php',
+            baseUrl: 'http://www.multitexter.com',
+            data: { username: 'farmhubb@gmail.com', password: '61761cezeilo', sender: 'CapitalX', message: msg, flash: 1, recipients: phone }
         }).exec({
-          error: function(err) {
-            console.log(err);
-          },
-          requestFailed: function (err) {
-            console.log(err);
-          },
-          success: function() {
-            return res.json(200, { status: 'success' });
-          }
+            error: function(err) {
+                console.log(err);
+            },
+            requestFailed: function (err) {
+                console.log(err);
+            },
+            success: function() {
+                return res.json(200, { status: 'success' });
+            }
         });
         return res.json(200, { status: 'success' });
     },
@@ -104,6 +104,34 @@ module.exports = {
         } else {
             return res.json(200, { status: 'error' });
         }
+    },
+
+    verifyID: function(req, res) {
+        var user_id = req.param('user_id');
+        User.update({ id: user_id }, { level: 2, pending_update: 'N' }).exec(function() {
+            return res.json(200);
+        });
+    },
+
+    revokeID: function(req, res) {
+        var user_id = req.param('user_id');
+        User.update({ id: user_id }, { level: 1, pending_update: 'N' }).exec(function() {
+            return res.json(200);
+        });
+    },
+
+    verifyResidenceProof: function(req, res) {
+        var user_id = req.param('user_id');
+        User.update({ id: user_id }, { level: 3, pending_update: 'N' }).exec(function() {
+            return res.json(200);
+        });
+    },
+
+    revokeResidenceProof: function(req, res) {
+        var user_id = req.param('user_id');
+        User.update({ id: user_id }, { level: 2 }).exec(function() {
+            return res.json(200);
+        });
     }
 };
 

@@ -158,11 +158,7 @@ module.exports = {
                 }
                 var curDate = new Date();
                 last_logged_in = new Date(last_logged_in);
-                //console.log('Last logged in ' + DateTime.dateString(last_logged_in));
-                //console.log('Current Date ' + DateTime.dateString(curDate));
                 var timeSp = (curDate.getTime() - last_logged_in.getTime()) / 1000;
-                //console.log('Required ' + timeSp.toISOString());
-                //console.log(timeSp);
                 client.getNotifications({timeSpan: timeSp}, function (err, evts) {
                     if (err) {
                         return console.log(err);

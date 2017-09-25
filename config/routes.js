@@ -50,6 +50,20 @@ module.exports.routes = {
     
     'GET /admin/accounts': 'AdminController.getAccounts',
 
+    //'GET /admin/instant-trade': 'AdminController.getInstantTrade',
+
+    'GET /admin/userpage/:id': 'AdminController.getUserPage',
+
+    'GET /admin/u_tnx/:user_id': 'UserController.ownerView',
+
+    'POST /admin/verify-id': 'UserLevelController.verifyID',
+
+    'POST /admin/revoke-id': 'UserLevelController.revokeID',
+
+    'POST /admin/verify-residence-proof': 'UserLevelController.verifyResidenceProof',
+
+    'POST /admin/revoke-residence-proof': 'UserLevelController.revokeResidenceProof',
+
     'GET /accounts/': 'AccountController.getAccounts',
 
     'GET /beneficiary/': 'BeneficiaryController.getUserBeneficiaries',
@@ -72,6 +86,8 @@ module.exports.routes = {
 
     // Trading routes begins here
     'GET /trade/': 'TradeController.index',
+
+    'PUT /trade/join': 'TradeController.joinTrade',
     
     'POST /offer/sell': 'OfferController.makeOffer',
     
@@ -97,6 +113,8 @@ module.exports.routes = {
     
     'GET /withdrawal/cancel/:id': 'WithdrawalRequestController.cancelRequest',
     
-    'POST /instantbuy': 'BitcoinTransactionController.instantBuy'
+    'POST /instantbuy': 'InstantTradeController.instantBuy',
+
+    'GET /get-btc-price': 'TradeController.getBTCPrice'
 
 };

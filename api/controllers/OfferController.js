@@ -36,12 +36,20 @@ module.exports = {
                 return res.json(200, { status: 'error', msg: err });
             }
 			// try and match this offer
-			Trading.tradeByOffer(offer.id, param('btc_qty'), param('prefered_amount')); /*.then(function(resp) {
-				console.log(resp);
+			Trading.tradeByOffer(offer.id, param('btc_qty'), param('prefered_amount')).then(function(resp) {
+                // broadcast new offer
+                if (resp == 'Broadcast') {
+                    sails.sockets.broadcast('trade', 'add-to-offer', {
+                        price: param('prefered_amount'),
+                        btc_qty: param('btc_qty')
+                    });
+                    return res.json(200, { status: 'success', action: resp, trade: offer });
+                } else if (resp == 'Fulfilled') {
+                    return res.json(200, { status: 'success', action: 'Kpa' });
+                }
 			}).catch(function(err) {
 				console.log(err);
-			});*/
-            return res.json(200, { status: 'success', offer_id: offer.id });
+			});
         });
     },
 	

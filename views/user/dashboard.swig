@@ -16,6 +16,11 @@
 	padding: 5px;
 	font-style: italic;
 }
+
+#progress-bar {
+    width: 100%;
+    height: 20px;
+}
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
 	<div class="col-sm-6">
@@ -102,8 +107,22 @@
 <script src="/js/plugins/qrcode.min.js"></script>
 <script type="text/javascript" src="/js/plugins/numeral.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="/js/plugins/progressbar.min.js"></script>
 <script>
-$(document).ready(function() {  
+var bar;
+$(document).ready(function() {
+    // progress bar for instant buy
+    bar = new ProgressBar.Line('#progress-bar', {
+        strokeWidth: 4,
+        easing: 'linear',
+        duration: 60000,
+        color: '#FFEA82',
+        trailColor: '#eee',
+        trailWidth: 4,
+        svgStyle: {width: '100%', height: '100%'}
+    });
+
+
     $("#getBTC-address").click(function(e) {
       $.get('/wallet/new-address', function(d) {
         if (d.status.trim() == 'success') {
@@ -190,13 +209,32 @@ $(document).ready(function() {
     $("#amount").keyup(function() {
         calculateCost();
     });
+
+    $("#form-instant-buy").submit(function(e) {
+        e.preventDefault();
+
+        $("#instant-btn").html("<i class='fa fa-cog fa-spin'></i> &nbsp;Processing").prop("disabled", true);
+        $.post('/order/buy', $(this).serialize(), function(d) {
+            if (d.status.trim() == 'success') {
+                if (d.action.trim() == 'Broadcast') {
+                    $("#instant-error").text("There is not enough BTC to meet your order at the moment. Please try again later.").removeClass('hidden');
+                } else {
+                    location.reload();
+                }
+            } else {
+                $("#instant-error").text(d.msg).removeClass('hidden');
+                $("#instant-btn").html("&nbsp;Send Request").prop("disabled", false);
+            }
+        }, 'JSON');
+    });
 });
 
-var btc_price = 1500000;
 var balance = {{ req.session.naira_available | json | safe }};
 function calculateCost() {
+    bar.set(0); // reset progress bar
     var cur = $("#cur option:selected").val();
     var amt = $("#amount").val();
+    var btc_price = $("#prefered-amt").val();
     var btc_qty, req_ngn = 0;
     if (cur == 'naira') {
         btc_qty = amt / btc_price;
@@ -212,6 +250,17 @@ function calculateCost() {
     }
     $("#btc-to-buy").val(Number(btc_qty).toFixed(9));
     $("#required_amt").val(numeral(req_ngn).format('0,00'));
+
+    // start the bar
+    bar.animate(1.0, function() {
+        $.get('/get-btc-price', function(d) {
+            if (d.status.trim() == 'success') {
+                $("#btc-price").text(numeral(d.btc_price).format("0,00"));
+                $("#prefered-amt").val(d.btc_price);
+                calculateCost();
+            }
+        }, 'JSON');
+    }); // start the progress bar
 }
 </script>
 {%  endblock %}

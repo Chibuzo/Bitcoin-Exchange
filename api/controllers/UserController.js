@@ -83,7 +83,7 @@ module.exports = {
                         User.update({id: user.id}, {
                             status: 'Active',
                             mnemonic: wallet.encrypted_mnemonic,
-                            wallet: wallet.id,
+                            wallet_id: wallet.id,
                             level: 1,
                             salt: salt
                         }).exec(function (err) {
@@ -115,7 +115,7 @@ module.exports = {
                 success: function () {
                     if (foundUser.status == 'Active') {
                         const bcrypt = require('bcrypt-nodejs');
-                        req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
+                        var pswd_hash = req.session.hash = bcrypt.hashSync(req.param('password'), foundUser.salt);
 
                         NairaAccount.getBalance(foundUser.id).then(function (balance) {
                             // fetch BTC account balances
@@ -126,7 +126,7 @@ module.exports = {
                             var passphrase = foundUser.email + "." + foundUser.id;
                             var last_logged_in = foundUser.updatedAt;
                             Wallet.getNotifications(foundUser.mnemonic, req.session.hash, passphrase, last_logged_in);
-                            Wallet.getBalance(foundUser.mnemonic, req.session.hash, passphrase).then(function (btc_bal) {
+                            Wallet.getBalance(foundUser.mnemonic, pswd_hash, passphrase).then(function (btc_bal) {
                                 var btc_balance = {};
                                 req.session.coinAvailableBalance = btc_bal.available / 100000000;     // converting Satoshi to BTC
                                 req.session.coinTotalAmount = btc_bal.totalAmount / 100000000;
@@ -144,7 +144,7 @@ module.exports = {
                         var user_type = foundUser.admin ? 'admin' : 'user';
 
                         // last login
-                        User.update({ id: req.session.userId }).exec(function() {});
+                        User.update({ id: req.session.userId }, { fullname: foundUser.fullname }).exec(function() {});
                         return res.json(200, { status: 'Ok', user_type: user_type });
                     } else if (foundUser.status == 'Inactive') {
                         return res.json(200, { status: 'Err', msg: "Your account is not yet Activated."});
@@ -162,7 +162,6 @@ module.exports = {
         if (!req.session.userId) {
             return res.view ('user/signin');
         }
-        
         User.findOne(req.session.userId, function(err, user) {
             if (err) {
                 return res.negotiate(err);
@@ -173,27 +172,37 @@ module.exports = {
                 { sender: req.session.userId },
                 { receiver: req.session.userId }
               ]
-            }).sort('createdAt DESC').populate('receiver').limit(10).exec(function(err, tnx) {
-                if (err) {}
+            }).sort({ createdAt: 'desc' }).populate('receiver').limit(10).exec(function(err, tnx) {
+                if (err) { return console.log(err); }
                 const converter = require('parallelfx');
                 converter.getParallelRate({ from: 'USD', to: 'NGN' }).then(function(resp) {
                     var HTTP = require('machinepack-http');
                     HTTP.get({
-                          url: '/market-price',
-                          baseUrl: 'api.blockchain.info/charts',
-                          data: { timespan: '1week', rollingAverage: '8hours', format: 'json' }
+                        url: '/market-price',
+                        baseUrl: 'api.blockchain.info/charts',
+                        data: { timespan: '1week', rollingAverage: '8hours', format: 'json' }
                     }).exec({
-                          error: function(err) {
+                        error: function(err) {
                             console.log(err);
-                          },
-                          requestFailed: function (err) {
+                        },
+                        requestFailed: function (err) {
                             console.log(err);
-                          },
-                          success: function(data) {
-                              return res.view('user/dashboard', {
-                                  market_price: data, trnx: tnx, xrate: resp
-                              });
-                          }
+                        },
+                        success: function(data) {
+                            Offer.find({status: 'Open'}).sort({
+                                amount_per_btc: 'desc',
+                                createdAt: 'desc'
+                            }).limit(1).exec(function (err, offer) {
+                                if (err) {
+                                }
+                                var _offer;
+                                _offer = offer.length < 1 ? 0.00 : offer[0].amount_per_btc;
+
+                                return res.view('user/dashboard', {
+                                    market_price: data, trnx: tnx, xrate: resp, btc_price: _offer
+                                });
+                            });
+                        }
                     });
                 });
             });
@@ -219,6 +228,20 @@ module.exports = {
             if (err) return res.negotiate(err);
             return res.view('user/settings', { user: user });
         });
+    },
+
+    ownerView: function(req, res) {
+        var user_id = req.param('user_id');
+        User.findOne({ id: user_id }).exec(function(err, user) {
+            if (err) { return; }
+            return res.view('admin/userpage', { user: user });
+        });
+        //User.findOne({ id: user_id })
+        //    .populate('level').populate('transactions').populate('bitcointransactions').populate('orders').populate('offers')
+        //    .exec(function(err, user) {
+        //        if (err) { return; }
+        //        return res.view('admin/userpage', { 'user': user });
+        //    });
     }
 };
 

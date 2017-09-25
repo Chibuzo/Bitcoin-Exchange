@@ -46,6 +46,27 @@ module.exports = {
 				});
 			});
 		});
-	}
+	},
+
+	getBTCPrice: function(req, res) {
+		Offer.find({status: 'Open'}).sort({
+			amount_per_btc: 'desc',
+			createdAt: 'desc'
+		}).limit(1).exec(function (err, offer) {
+			if (err) {
+			}
+			var _offer;
+			_offer = offer.length < 1 ? 0.00 : offer[0].amount_per_btc;
+			return res.json(200, { status: 'success', btc_price: _offer });
+		});
+	},
+
+	joinTrade: function(req, res) {
+        if (!req.isSocket) {
+            return res.badRequest();
+        }
+        sails.sockets.join(req, 'trade');
+        return res.ok();
+    }
 };
 

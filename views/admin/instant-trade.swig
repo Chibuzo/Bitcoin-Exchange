@@ -1,16 +1,16 @@
 {% extends 'admin-layout.swig' %}
-{% set title = 'Bitcoin Transactions' %}
+{% set title = 'Instant Buy & Sell' %}
 {% block body %}
 
 	<div class="row wrapper border-bottom white-bg page-heading">
 		<div class="col-sm-4">
-			<h2>Transactions</h2>
+			<h2>Instant Buy & Sell</h2>
 			<ol class="breadcrumb">
 				<li>
 					Admin
 				</li>
 				<li class="active">
-					<strong>Bitcoin Transactions</strong>
+					<strong>Instant Trade</strong>
 				</li>
 			</ol>
 		</div>
@@ -22,7 +22,7 @@
 				<div class="col-md-12">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-							<h5>Bitcoin Transactions</h5>
+							<h5>Intant Trade</h5>
 						</div>
 						<div class="ibox-content">
 							<table class="table table-striped">
@@ -30,23 +30,25 @@
 								<tr>
 									<th>Date</th>
 									<th>User Name</th>
-									<th>Description</th>
-									<th class="text-right">BTC</th>
-									<th class="text-right">Fee</th>
+									<th>Trade Type</th>
+									<th>BTC</th>
+									<th>Market Price (&#8358;)</th>
+									<th class="text-right">Total Amount (&#8358;)</th>
 									<th>Status</th>
-									<th class="text-center">Action</th>
 								</tr>
 								</thead>
 								<tbody id="tb-transactions">
-								{% for tnx in trnx %}
+								{% for tnx in trades %}
 									<tr id="{{ tnx.id }}">
-										<td>{{ tnx.tnx_date | date('d-m-Y H:i') }}</td>
-										<td><a href="/admin/userpage/{{ tnx.user_id.id }}"{{ tnx.user_id.fullname }}</a></td>
-										<td>{{ tnx.description }}</td>
-										<td class="text-right">{{ tnx.btc }}</td>
-										<td class="text-right">{{ tnx.fee }}</td>
-										<td>{{ tnx.notice }}</td>
-										<td class="text-center opt-icons">
+										<td>{{ tnx.createdAt | date('d-m-Y H:i') }}</td>
+										<td>{{ tnx.user.fullname }}</td>
+										<td>{{ tnx.trade_type }}</td>
+										<td class="text-right">{{ tnx.btc | toFixed }}</td>
+										<td class="text-right">{{ tnx.used_market_price | formatCurrency }}</td>
+										<td class="text-right">{{ tnx.used_market_price * tnx.btc | formatCurrency }}</td>
+										<td class="text-right">{{ tnx.amount | formatCurrency }}</td>
+										<td>{{ tnx.status }}</td>
+										<td class="text-center opt-icons hidden">
 											<a href="" class="approve" data-toggle="tooltip" title="Confirm payment"><i class="fa fa-check fa-lg"></i> </a>
 											<a href="" class="remove" data-toggle="tooltip" title="Remove transaction"><i class="fa fa-trash-o fa-lg"></i> </a>
 										</td>
@@ -65,5 +67,5 @@
 
 {% block script %}
 $(function() {
-	$('[data-toggle="tooltip"]').tooltip();
+$('[data-toggle="tooltip"]').tooltip();
 });

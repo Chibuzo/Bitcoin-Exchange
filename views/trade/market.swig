@@ -28,12 +28,12 @@
 	}
 
 	.inner-div {
-		padding: 15px 8px;
+		padding: 5px 8px;
 		font-size: 13px;
 	}
 	
 	strong {
-		font-size: 13px;
+		font-size: 1em;
 		color: #666;
 	}
 	
@@ -50,7 +50,7 @@
 	}
 	
 	table tr th {
-		font-size: 13px;
+		font-size: 1em;
 	}
 
 	table {
@@ -74,9 +74,9 @@
 			<div class="trade-header">Available <Offers></Offers></div>
 			<div class="inner-div" id="offers">
 				<div class="row">
-						<div class="col-md-6"><strong>NGN Price</strong></div>
-						<div class="col-md-6 text-right"><strong>BTC Qty</strong></div>
-					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6"><strong>NGN Price</strong></div>
+					<div class="col-md-6 col-sm-6 col-xs-6 text-right"><strong>BTC Qty</strong></div>
+				</div>
 				{% for offer in offer_spread %}
 					<div class="row offer-row">
 						<div class="col-md-6 col-sm-6 col-xs-6 offer-ng-amt">{{ offer.amount_per_btc | formatCurrency }}</div>
@@ -86,7 +86,7 @@
 			</div>
 			
 			<div class="trade-header">Current Orders</div>
-			<div class="inner-div" id="offers">
+			<div class="inner-div" id="orders">
 				<div class="row">
 					<div class="col-md-6"><strong>NGN Price</strong></div>
 					<div class="col-md-6 text-right"><strong>BTC Qty</strong></div>
@@ -190,12 +190,12 @@
 						<div class="pull-left">Open Orders</div>
 						<div class="pull-right">Open</div>
 					</div>
-					<div class="inner-div" style="overflow-x: auto">
-						<table class="tbl-order table-striped">
+					<div class="inner-div table-responsive">
+						<table class="tbl-order table-striped table">
 							<thead>
 								<tr>
 									<th>Description</th>
-									<th class="text-right">Required BTC</th>
+									<th class="text-right">BTC</th>
 									<th class="text-right">Asking Price</th>
 									<th class="text-right">Total Amount</th>
 									<th class="text-right">Fees</th>
@@ -203,7 +203,7 @@
 									<th class="text-center">Cancel</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody id="tb-trades">
 								{% for order in orders %}
 									{% if order.owner == req.session.userId %}
 										{% set amount = order.amount_per_btc * order.btc_amount %}
@@ -239,20 +239,23 @@
 
 		<div class="col-md-3">
 			<div class="trade-header">Recent Trades</div>
-			<div class="inner-div">
-				24 Hour Volume: BTC
+			<div class="inner-div"  id="recent-trades">
+				<div class="text-center"> 24 Hour Volume: BTC</div>
 				<div class="row">
-					<div class="col-md-2"><strong>Time</strong></div>
-					<div class="col-md-5 text-right"><strong>NGN Price</strong></div>
-					<div class="col-md-5 text-right"><strong>BTC Qty</strong></div>
+					<div class="col-md-2 col-sm-2 col-xs-2"><strong>Time</strong></div>
+					<div class="col-md-5 col-sm-5 col-xs-5 text-right"><strong>NGN Price</strong></div>
+					<div class="col-md-5 col-sm-5 col-xs-5 text-right"><strong>BTC Qty</strong></div>
 				</div>
-				{% for trade in trades %}
-					<div class="row">
-						<div class="col-md-2 col-sm-2 col-xs-2">{{ trade.updatedAt | date('H:i') }}</div>
-						<div class="col-md-5 col-sm-5 col-xs-5 order-ng-amt text-right">{{ trade.amount_per_btc | formatCurrency }}</div>
-						<div class="col-md-5 col-sm-5 col-xs-5 text-right order-btc-qty">{{ trade.btc_amount | toFixed }}</div>
-					</div>
-				{% endfor %}	
+
+				<div id="recent-trade-div">
+					{% for trade in trades %}
+						<div class="row recent-trade-row">
+							<div class="col-md-2 col-sm-2 col-xs-2">{{ trade.updatedAt | date('H:i') }}</div>
+							<div class="col-md-5 col-sm-5 col-xs-5 text-right">{{ trade.amount_per_btc | formatCurrency }}</div>
+							<div class="col-md-5 col-sm-5 col-xs-5 text-right">{{ trade.btc_amount | toFixed }}</div>
+						</div>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -262,163 +265,228 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock %}
 
-{% block script %}
+{% block scriptTag %}
+<script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+<script type="text/javascript">
+var instant_trade = false;
+var instant_selling_price, instant_buying_price;
+$(document).ready(function() {
 
-$(function () {
-	$('[data-toggle="tooltip"]').tooltip();
-});
-
-
-// update estimated cost and fees
-var btc, ngn;
-$("#btc_qty, #prefered_amount").keyup(function() {
-	calculateTrade();
-});
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 
 
-
-$(".btn-sell").click(function(e) {
-	e.preventDefault();
-	$("#trade-opt").val('Sell');
-	$(this).addClass('trade-btn-active');
-	$(".buy").addClass('hidden');
-	$(".sell").removeClass('hidden');
-	$(".btn-buy").removeClass('trade-btn-active');
-	$("#order-btn").text("Post Offer");
-	calculateTrade();
-});
+	// update estimated cost and fees
+	var btc, ngn;
+	$("#btc_qty, #prefered_amount").keyup(function () {
+		instant_trade = false;
+		calculateTrade();
+	});
 
 
-$(".btn-buy").click(function(e) {
-	e.preventDefault();
-	//calculateTrade();
-	$("#trade-opt").val('Buy');
-	$(this).addClass('trade-btn-active');
-	$(".sell").addClass('hidden');
-	$(".buy").removeClass('hidden');
-	$(".btn-sell").removeClass('trade-btn-active');
-	$("#order-btn").text("Place Order");
-	calculateTrade();
-});
+	$(".btn-sell").click(function (e) {
+		e.preventDefault();
+		instant_trade = true;
+		// fetch latest selling price
+		instant_selling_price = $(".offer-row").filter(":first").find(".offer-ng-amt").text();
+		instant_selling_price = instant_selling_price.replace(/,/g,"");
+		$("#prefered_amount").val(instant_selling_price);
+		$("#trade-opt").val('Sell');
+		$(this).addClass('trade-btn-active');
+		$(".buy").addClass('hidden');
+		$(".sell").removeClass('hidden');
+		$(".btn-buy").removeClass('trade-btn-active');
+		$("#order-btn").text("Post Offer");
+		calculateTrade();
+	});
 
 
-// submit form
-$("#form-trade").submit(function(e) {
-	e.preventDefault();
+	$(".btn-buy").click(function (e) {
+		e.preventDefault();
+		instant_trade = true;
+		// fetch latest buying price
+		instant_buying_price = $(".order-row").filter(":first").find(".order-ng-amt").text();
+		instant_buying_price = instant_buying_price.replace(/,/g,"");
+		$("#prefered_amount").val(instant_buying_price);
+		$("#trade-opt").val('Buy');
+		$(this).addClass('trade-btn-active');
+		$(".sell").addClass('hidden');
+		$(".buy").removeClass('hidden');
+		$(".btn-sell").removeClass('trade-btn-active');
+		$("#order-btn").text("Place Order");
+		calculateTrade();
+	});
 
-	var opt = $("#trade-opt").val();
-	var path;
-	if (opt == 'Sell') {
-		path = '/offer/sell'
-	} else if (opt == 'Buy') {
-		path = '/order/buy';
-	}
-	$.post(path, $(this).serialize(), function(d) {
-		if (d.status.trim() == 'success') {
-			location.reload(true);
+
+	// submit form
+	$("#form-trade").submit(function (e) {
+		e.preventDefault();
+
+		$("#order-btn").text("Processing...").prop("disabled", true);
+		var opt = $("#trade-opt").val();
+		var path, trade_type;
+		if (opt == 'Sell') {
+			path = '/offer/sell';
+			trade_type = 'Offer';
+		} else if (opt == 'Buy') {
+			path = '/order/buy';
+			trade_type = 'Order';
+		}
+		$.post(path, $(this).serialize() + '&instant=' + instant_trade, function (d) {
+			if (d.status.trim() == 'success') {
+				if (d.action.trim() == 'Broadcast') {
+					var amount = d.trade.btc_qty * d.trade.amount_per_btc;
+					var trade = '<tr id="' + d.trade.id + '"> ' +
+						"<td>BTC " + trade_type + "</td>" +
+						'<td class="text-right">' + d.trade.btc_qty + '</td>' +
+						'<td class="text-right">&#8358;' + numeral(d.trade.amount_per_btc).format("0,0") + '</td>' +
+						'<td class="text-right">&#8358;' + numeral(amount).format("0,0") + '</td>' +
+						'<td class="text-right">' + d.trade.fees + '</td>' +
+						'<td class="text-center">Now</td>' +
+						'<td class="text-center"><a href="" class="cancel-offer"><i class="fa fa-times fa-lg"></i></a></td>' +
+						'</tr>';
+					$("#tb-trades").prepend(trade);
+				}
+				$("#form-trade")[0].reset();
+			} else {
+				alert("Error");
+				location.reload();
+			}
+			$("#order-btn").text("Place Order").prop("disabled", false);
+		}, 'JSON');
+	});
+
+	$("#order-btn").click(function () {
+		$("#form-trade").submit();
+	});
+
+	$(".order-row, .offer-row").click(function () {
+		instant_trade = false;
+		if ($(this).attr("class") == 'order-row') {
+			$("#btc_qty").val($(this).find('order-btc-qty').text());
+			$("#prefered_amount").val($(this).find('order-ng-amt').text());
+			$('.btn-buy').click();
 		} else {
-			alert("Error");
+			$("#btc_qty").val($(this).find('offer-btc-qty').text());
+			$("#prefered_amount").val($(this).find('offer-ng-amt').text());
+			$('.btn-sell').click();
 		}
-	}, 'JSON');
-});
+	});
 
-$("#order-btn").click(function() {
-	$("#form-trade").submit();
-});
-
-$(".order-row, .offer-row").click(function() {
-	if ($(this).attr("class") == 'order-row') {
-		$("#btc_qty").val($(this).find('order-btc-qty').text());
-		$("#prefered_amount").val($(this).find('order-ng-amt').text());
-		$('.btn-buy').click();
-	} else {
-		$("#btc_qty").val($(this).find('offer-btc-qty').text());
-		$("#prefered_amount").val($(this).find('offer-ng-amt').text());
-		$('.btn-sell').click();
-	}
-});
-
-$('.cancel-order').click(function(e) {
-	e.preventDefault();
-	if (confirm("Are you sure you want to cancel this Order?")) {
-		var $parentTr = $(this).parents('tr');
-		var id = $parentTr.attr('id');
-		$.post('/order/cancel/' + id, function(d) {
-			if (d.status.trim() == 'success') {
-				$parentTr.fadeOut();
-			}
-		}, 'JSON');
-	}
-});
-
-$('.cancel-offer').click(function(e) {
-	e.preventDefault();
-	if (confirm("Are you sure you want to cancel this Offer?")) {
-		var $parentTr = $(this).parents('tr');
-		var id = $parentTr.attr('id');
-		$.post('/offer/cancel/' + id, function(d) {
-			if (d.status.trim() == 'success') {
-				$parentTr.fadeOut();
-			}
-		}, 'JSON');
-	}
-});
-
-var market_price = {{ market_price | json | safe }};
-var xrate = {{ xrate | json | safe }};
-var chart_data = [];
-market_price.values.forEach(function(data) {
-	var ngn = (data.y * xrate);
-	chart_data.push([(data.x * 1000), ngn]);
-});
-Highcharts.chart('chart-canvass', {
-	title: {
-        text: null
-    },
-	
-	subtitle: {
-        text: 'Average NGN market price across major bitcoin exchanges.'
-    },
-	
-    xAxis: {
-		type: 'datetime',
-		labels: {
-		  format: '{value:%e %b %Y}'
+	$('.cancel-order').click(function (e) {
+		e.preventDefault();
+		if (confirm("Are you sure you want to cancel this Order?")) {
+			var $parentTr = $(this).parents('tr');
+			var id = $parentTr.attr('id');
+			$.post('/order/cancel/' + id, function (d) {
+				if (d.status.trim() == 'success') {
+					$parentTr.fadeOut();
+				}
+			}, 'JSON');
 		}
-	},
-	
-	yAxis: {
+	});
+
+	$('.cancel-offer').click(function (e) {
+		e.preventDefault();
+		if (confirm("Are you sure you want to cancel this Offer?")) {
+			var $parentTr = $(this).parents('tr');
+			var id = $parentTr.attr('id');
+			$.post('/offer/cancel/' + id, function (d) {
+				if (d.status.trim() == 'success') {
+					$parentTr.fadeOut();
+				}
+			}, 'JSON');
+		}
+	});
+
+	var market_price = {{ market_price | json | safe }};
+	var xrate = {{ xrate | json | safe }};
+	var chart_data = [];
+	market_price.values.forEach(function (data) {
+		var ngn = (data.y * xrate);
+		chart_data.push([(data.x * 1000), ngn]);
+	});
+	Highcharts.chart('chart-canvass', {
 		title: {
-			text: 'Market price'
+			text: null
 		},
-		labels: {
-			formatter: function () {
-				return 'N' + numeral(this.value).format('0,0');
-			}            
-		}
-	},
 
-    series: [{
-        name: 'Price',
-        data: chart_data 
-    }]
+		subtitle: {
+			text: 'Average NGN market price across major bitcoin exchanges.'
+		},
 
+		xAxis: {
+			type: 'datetime',
+			labels: {
+				format: '{value:%e %b %Y}'
+			}
+		},
+
+		yAxis: {
+			title: {
+				text: 'Market price'
+			},
+			labels: {
+				formatter: function () {
+					return 'N' + numeral(this.value).format('0,0');
+				}
+			}
+		},
+
+		series: [{
+			name: 'Price',
+			data: chart_data
+		}]
+
+	});
+
+	// join trade room
+	io.socket.put('/trade/join', function() {
+		//console.log('Joined Trade!');
+	});
+
+	// realtime operations
+	io.socket.on('add-to-offer', function(offer) {
+		var new_offer = '<div class="row offer-row">'
+			+'<div class="col-md-6 col-sm-6 col-xs-6 offer-ng-amt">' + numeral(offer.price).format("0,0") + '</div>'
+			+'<div class="col-md-6 col-sm-6 col-xs-6 text-right offer-btc-qty">' + Number(offer.btc_qty).toFixed(6) + '</div>'
+		+'</div>';
+		$("#offers").append(new_offer);
+	});
+
+	io.socket.on('add-to-order', function(order) {
+		var new_order = '<div class="row order-row">'
+				+'<div class="col-md-6 col-sm-6 col-xs-6 order-ng-amt">' + numeral(order.price).format("0,0") + '</div>'
+				+'<div class="col-md-6 col-sm-6 col-xs-6 text-right order-btc-qty">' + Number(order.btc_qty).toFixed(6) + '</div>'
+				+'</div>';
+		$("#orders").append(new_order);
+	});
+
+	io.socket.on('completed-trade', function(trade) {
+		console.log(trade)
+		var trade = '<div class="row recent-trade-row">'
+			+'<div class="col-md-2 col-sm-2 col-xs-2">' + trade.trade_time + '</div>'
+			+'<div class="col-md-5 col-sm-5 col-xs-5 text-right">' + numeral(trade.amount_per_btc).format("0,0") + '</div>'
+			+'<div class="col-md-5 col-sm-5 col-xs-5 text-right">' + Number(trade.btc_qty).toFixed(6) + '</div>'
+		+'</div>';
+		$("#recent-trade-div").prepend(trade);
+	});
 });
 
 
 function calculateTrade() {
-	btc = $("#btc_qty").val();
-	ngn = $("#prefered_amount").val();
+	btc = $("#btc_qty").val().length > 0 ? $("#btc_qty").val() : 0;
+	ngn = $("#prefered_amount").val().length > 0 ? $("#prefered_amount").val() : 0;
 
-	var selling_fees = $("#sell-fees").val() / 100;
-	var buying_fees = $("#buy-fees").val() / 100;
+	var selling_fees = instant_selling_price >= ngn ? $("#sell-fees").val() / 100 : 0.000000;
+	var buying_fees  = instant_buying_price <= ngn ? $("#buy-fees").val() / 100 : 0.000000;
 	var naira_balance = numeral($("#ngn-balance").val()) || 0.00;
 	var btc_balance = $("#btc-balance").val();
 	var trade_opt = $("#trade-opt").val();
-//console.log(naira_balance);
 	if (trade_opt == 'Buy') {
-		buying_fees = (buying_fees * btc).toFixed(6);
-		$(".buy").find("#est-btc").text(buying_fees);
+		buying_fees = btc == 0 ? 0.000000 : buying_fees * btc;
+		$(".buy").find("#est-btc").text(Number(buying_fees).toFixed(6));
 		$(".buy").find("#ng-required").text(numeral(ngn * btc).format('0,0.00'));
 		$(".buy").find("#ng-balance").text(numeral(naira_balance).format('0,0.00'));
 		// manipulate submit button
@@ -428,8 +496,8 @@ function calculateTrade() {
 			$("#order-btn").prop("disabled", true);
 		}
 	} else if (trade_opt == 'Sell') {
-		selling_fees = (selling_fees * btc).toFixed(6);
-		$(".sell").find("#est-btc").text(selling_fees);
+		selling_fees = btc == 0 ? 0.000000 : selling_fees * btc;
+		$(".sell").find("#est-btc").text(Number(selling_fees).toFixed(6));
 		$(".sell").find("#btc-required").text(btc);
 		$(".sell").find("#btc-balance").text(btc_balance);
 		$(".sell").find("#sales-total").text(numeral(ngn * btc).format('0,0.00'));
@@ -441,4 +509,5 @@ function calculateTrade() {
 		}
 	}
 }
+</script>
 {% endblock %}
